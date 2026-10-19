@@ -23,7 +23,7 @@
 		"traceServerWarnings": "cd server && npm run traceWarnings",
 		"traceClientWarnings": "cd client && npm run traceWarnings",
 		"traceWarnings": "concurrently \"npm run traceServerWarnings\" \"npm run traceClientWarnings\" --names \"TRACEWARNING\"",
-		"docs:structure": "node scripts/generate-structure.js",
+		"docs:structure": "node config/generate-structure.js",
 		"test:server": "cd server && npm test"
 	},
 	"repository": {
