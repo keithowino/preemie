@@ -19,6 +19,14 @@ const envSchema = z.object({
 
 	MONGODB_URI: z.string().min(1, "MONGODB_URI is required."),
 
+	GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required."),
+
+	GEMINI_MODEL: z
+		.string()
+		.trim()
+		.min(1, "GEMINI_MODEL cannot be empty.")
+		.default("gemini-3.8-flash"),
+
 	CLIENT_URL: z.url().default("http://localhost:3000"),
 
 	CLOUDINARY_CLOUD_NAME: z
@@ -87,6 +95,11 @@ export const env = {
 	// 	issuer: parsedEnv.data.JWT_ISSUER,
 	// 	audience: parsedEnv.data.JWT_AUDIENCE,
 	// },
+
+	gemini: {
+		apiKey: parsedEnv.data.GEMINI_API_KEY,
+		model: parsedEnv.data.GEMINI_MODEL,
+	},
 
 	// email: {
 	// 	resendApiKey: parsedEnv.data.RESEND_API_KEY,

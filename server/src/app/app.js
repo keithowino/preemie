@@ -2,7 +2,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { cors } from "./config/index.js";
 import routes from "./routes/api.js";
-// import { requestMetadata, notFound, errorHandler } from "../shared/index.js";
+import { errorHandler, notFound } from "./lib/index.js";
+// import { requestMetadata } from "../shared/index.js";
 
 const app = express();
 
@@ -30,12 +31,12 @@ app.use(cookieParser());
 
 app.use("/api/v1", routes);
 
-// app.use(notFound);
+app.use(notFound);
 
 /**
  * app.use(uploadErrorHandler);
  */
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 export default app;
