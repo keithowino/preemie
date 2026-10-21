@@ -31,5 +31,9 @@ export function createIdeationService({ provider, repository }) {
 		async getByGenerationId(generationId) {
 			return repository.findByGenerationId(generationId);
 		},
+
+		async list(payload) {
+			return repository.findGenerations(payload);
+		},
 	};
 }

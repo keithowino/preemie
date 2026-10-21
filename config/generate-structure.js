@@ -36,8 +36,6 @@ const IGNORE = [
 	"*.min.css",
 
 	"trash",
-	"rest_tests",
-	"tests",
 	"prompts",
 	"docs",
 ];

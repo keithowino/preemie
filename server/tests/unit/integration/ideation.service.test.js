@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { createIdeationService } from "./ideation.service.js";
+import { createIdeationService } from "../../../src/index.js";
 
 /**
  * It imports the service directly and supplies fake dependencies,

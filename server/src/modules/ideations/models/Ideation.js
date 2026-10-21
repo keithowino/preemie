@@ -224,6 +224,16 @@ const conceptSchema = new Schema(
 			required: true,
 		},
 
+		scientificPrinciples: {
+			type: [String],
+			default: [],
+		},
+
+		limitations: {
+			type: [String],
+			default: [],
+		},
+
 		assumptions: {
 			type: [String],
 			default: [],

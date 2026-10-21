@@ -21,11 +21,7 @@ const envSchema = z.object({
 
 	GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required."),
 
-	GEMINI_MODEL: z
-		.string()
-		.trim()
-		.min(1, "GEMINI_MODEL cannot be empty.")
-		.default("gemini-3.8-flash"),
+	GEMINI_MODEL: z.string().trim().min(1, "GEMINI_MODEL cannot be empty."),
 
 	CLIENT_URL: z.url().default("http://localhost:3000"),
 

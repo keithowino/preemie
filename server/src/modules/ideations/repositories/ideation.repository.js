@@ -8,4 +8,8 @@ export const ideationRepository = {
 	async findByGenerationId(generationId) {
 		return Ideation.findOne({ generationId }).lean();
 	},
+
+	async findGenerations() {
+		return Ideation.find().lean();
+	},
 };

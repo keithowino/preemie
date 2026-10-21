@@ -106,9 +106,24 @@ export const ideationConceptSchema = z.object({
 		steps: z.array(buildStepSchema).min(1).max(20),
 	}),
 
+	/**
+	 * Explain the scientific or engineering ideas behind
+	 * the concept.
+	 */
+	scientificPrinciples: z
+		.array(z.string().trim().min(1).max(1000))
+		.min(1)
+		.max(10),
+
+	/**
+	 * Record constraints, assumptions, and anything not
+	 * yet verified.
+	 */
+	limitations: z.array(z.string().trim().min(1).max(1000)).min(1).max(20),
+
 	assumptions: textList,
 
-	safetyWarnings: textList,
+	safetyWarnings: textList.min(1),
 
 	tests: textList,
 });

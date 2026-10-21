@@ -1,3 +1,5 @@
+Configure a architecture-specification document.
+
 The important distinction is that each stage has a different job. The input experience should make describing materials effortless; the results experience should make the ideas easy to compare; and the development experience should make a selected idea actionable.
 
 We should make those three stages excellent before adding accounts, a community, an invention museum, or other secondary features.
@@ -128,6 +130,4 @@ Deferred
 - Generated concept imagery
 - PDF export, community, and public gallery
 
-```
-
-```
+---

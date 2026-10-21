@@ -1,0 +1,83 @@
+@baseUrl = http://localhost:5000/api/v1
+# @generationId = GENERATION_ID
+@generationId = 48d18ec7-6f19-4e42-aad8-1ab3a5eade7e
+
+### create and persist an ideation
+
+POST {{baseUrl}}/ideations
+Content-Type: application/json
+Accept: application/json
+
+# {
+#   "materials": [
+#     {
+#       "name": "Plastic bottles",
+#       "quantity": 5,
+#       "unit": "pieces",
+#       "condition": "Clean and intact"
+#     },
+#     {
+#       "name": "Scrap wood",
+#       "quantity": 4,
+#       "unit": "pieces",
+#       "condition": "Dry and usable"
+#     }
+#   ],
+#   "constraints": {
+#     "goal": "Create useful household items from available materials",
+#     "environment": "Small home workshop",
+#     "skillLevel": "BEGINNER",
+#     "notes": "Prefer simple hand tools and low-cost additional materials."
+#   }
+# }
+
+{
+  "materials": [
+    {
+      "name": "Magnet",
+      "quantity": 1,
+      "condition": "It is magnetic"
+    },
+    {
+      "name": "Cellphone batteries",
+      "quantity": 3,
+      "condition": "Functioning"
+    }
+  ],
+  "constraints": {
+    "goal": "Create useful pass-time DIY items from available materials",
+    "environment": "Small home workshop",
+    "skillLevel": "BEGINNER",
+    "notes": "Prefer simple hand tools and low-cost additional materials."
+  }
+}
+
+### Retrieve generation
+
+GET {{baseUrl}}/ideations/{{generationId}}
+Accept: application/json
+
+### Retrieve generations
+
+GET {{baseUrl}}/ideations
+Accept: application/json
+
+### Validate rejection of an invalid request body
+
+POST {{baseUrl}}/ideations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "materials": []
+}
+
+### Validate rejection of an invalid generation ID
+
+GET {{baseUrl}}/ideations/not-a-uuid
+Accept: application/json
+
+### Validate not-found behavior
+
+GET {{baseUrl}}/ideations/00000000-0000-4000-8000-000000000001
+Accept: application/json

@@ -8,7 +8,9 @@
 		"start": "node src/app/server.js",
 		"dev": "nodemon src/app/server.js",
 		"build": "echo 'No build step needed for server'",
-		"test": "node --test"
+		"test": "node --test",
+		"apiConnection": "node apiClientConnection.js",
+		"modelSupport": "node checkModelSupport.js"
 	},
 	"keywords": [],
 	"author": "Pickaxe & Shovel",

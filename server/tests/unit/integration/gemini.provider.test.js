@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createGeminiProvider } from "./gemini.provider.js";
+import { createGeminiProvider } from "../../../src/index.js";
 
 const requiredTypes = ["REPURPOSE", "IMPROVEMENT", "NOVEL_INVENTION"];
 
@@ -38,6 +38,12 @@ function makeConcept(type) {
 				},
 			],
 		},
+		scientificPrinciples: [
+			"Rotational motion can transfer mechanical energy to a suitable load.",
+		],
+		limitations: [
+			"The motor's condition and available torque have not been verified.",
+		],
 		assumptions: ["The motor is functional."],
 		safetyWarnings: ["Disconnect power before adjusting wiring."],
 		tests: ["Check that the assembly operates as intended."],
@@ -162,5 +168,47 @@ test("requires a compatible client and model", () => {
 				model: " ",
 			}),
 		/model name is required/,
+	);
+});
+
+test("rejects a concept without scientific principles", async () => {
+	const response = makeValidResponse();
+	delete response.concepts[0].scientificPrinciples;
+
+	const provider = makeProvider({
+		text: JSON.stringify(response),
+	});
+
+	await assert.rejects(
+		provider.generateIdeation(sampleInput),
+		/invalid concept structure/,
+	);
+});
+
+test("rejects a concept without limitations", async () => {
+	const response = makeValidResponse();
+	delete response.concepts[0].limitations;
+
+	const provider = makeProvider({
+		text: JSON.stringify(response),
+	});
+
+	await assert.rejects(
+		provider.generateIdeation(sampleInput),
+		/invalid concept structure/,
+	);
+});
+
+test("rejects empty safety guidance", async () => {
+	const response = makeValidResponse();
+	response.concepts[0].safetyWarnings = [];
+
+	const provider = makeProvider({
+		text: JSON.stringify(response),
+	});
+
+	await assert.rejects(
+		provider.generateIdeation(sampleInput),
+		/invalid concept structure/,
 	);
 });
