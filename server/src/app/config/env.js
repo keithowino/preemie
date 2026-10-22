@@ -17,6 +17,36 @@ const envSchema = z.object({
 	 */
 	PORT: z.coerce.number().int().positive().default(5000),
 
+	REQUEST_BODY_LIMIT: z
+		.string()
+		.trim()
+		.min(1, "REQUEST_BODY_LIMIT cannot be empty.")
+		.default("64kb"),
+
+	IDEATION_GENERATION_RATE_LIMIT_MAX: z.coerce
+		.number()
+		.int()
+		.positive()
+		.default(5),
+
+	IDEATION_GENERATION_RATE_LIMIT_WINDOW_MS: z.coerce
+		.number()
+		.int()
+		.positive()
+		.default(900000),
+
+	IDEATION_RETRIEVAL_RATE_LIMIT_MAX: z.coerce
+		.number()
+		.int()
+		.positive()
+		.default(60),
+
+	IDEATION_RETRIEVAL_RATE_LIMIT_WINDOW_MS: z.coerce
+		.number()
+		.int()
+		.positive()
+		.default(900000),
+
 	MONGODB_URI: z.string().min(1, "MONGODB_URI is required."),
 
 	GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required."),
@@ -74,6 +104,7 @@ if (!parsedEnv.success) {
 export const env = {
 	nodeEnv: parsedEnv.data.NODE_ENV,
 	port: parsedEnv.data.PORT,
+	requestBodyLimit: parsedEnv.data.REQUEST_BODY_LIMIT,
 	mongoUri: parsedEnv.data.MONGODB_URI,
 	clientUrl: parsedEnv.data.CLIENT_URL,
 
@@ -102,4 +133,15 @@ export const env = {
 	// 	contactNotificationEmail: parsedEnv.data.CONTACT_NOTIFICATION_EMAIL,
 	// 	resendFromEmail: parsedEnv.data.RESEND_FROM_EMAIL,
 	// },
+
+	ideationRateLimits: {
+		generation: {
+			max: parsedEnv.data.IDEATION_GENERATION_RATE_LIMIT_MAX,
+			windowMs: parsedEnv.data.IDEATION_GENERATION_RATE_LIMIT_WINDOW_MS,
+		},
+		retrieval: {
+			max: parsedEnv.data.IDEATION_RETRIEVAL_RATE_LIMIT_MAX,
+			windowMs: parsedEnv.data.IDEATION_RETRIEVAL_RATE_LIMIT_WINDOW_MS,
+		},
+	},
 };

@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:5000/api/v1
 # @generationId = GENERATION_ID
-@generationId = 48d18ec7-6f19-4e42-aad8-1ab3a5eade7e
+@generationId = 0703d4be-9252-411c-ae06-cd491d682da2
 
 ### create and persist an ideation
 
@@ -80,4 +80,33 @@ Accept: application/json
 ### Validate not-found behavior
 
 GET {{baseUrl}}/ideations/00000000-0000-4000-8000-000000000001
+Accept: application/json
+
+### Rate Generation request (expected: 400)
+# The invalid body prevents a Gemini call, but the limiter still counts it.
+# Call it till the limit is exceeded.
+
+POST {{baseUrl}}/ideations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "materials": []
+}
+
+### Rate limit { step - 1 } List generations (expected: 200)
+
+GET {{baseUrl}}/ideations
+Accept: application/json
+
+### Rate limit { step - 2 } Retrieve a generation (expected: 200)
+# Uses the same retrieval counter as the list endpoint.
+
+GET {{baseUrl}}/ideations/{{generationId}}
+Accept: application/json
+
+### Rate limit { step - 3 } List generations again (expected: 429)
+# Exceeds the shared retrieval limit of two requests per minute.
+
+GET {{baseUrl}}/ideations
 Accept: application/json

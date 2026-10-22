@@ -20,6 +20,23 @@ export default function errorHandler(err, req, res, next) {
 	}
 
 	/**
+	 * Oversized JSON request bodies
+	 *
+	 * express.json() rejects requests that exceed the configured limit
+	 * before they reach a controller.
+	 */
+	if (
+		error.status === HTTP_STATUS.CONTENT_TOO_LARGE &&
+		error.type === "entity.too.large"
+	) {
+		error = new AppError(
+			"Request body is too large.",
+			HTTP_STATUS.CONTENT_TOO_LARGE,
+			ErrorCodes.CONTENT_TOO_LARGE,
+		);
+	}
+
+	/**
 	 * Malformed JSON request bodies
 	 *
 	 * express.json() can throw a SyntaxError before the request

@@ -4,6 +4,10 @@ import { createIdeationController } from "../controllers/index.js";
 import { ideationRepository } from "../repositories/index.js";
 import { createIdeationService } from "../services/index.js";
 import { geminiProvider } from "../providers/index.js";
+import {
+	generationRateLimiter,
+	retrievalRateLimiter,
+} from "../../../app/index.js";
 
 /**
  * The route ordering is also intentional: POST / handles creation,
@@ -20,10 +24,14 @@ const ideationService = createIdeationService({
 
 const controller = createIdeationController({ ideationService });
 
-router.post("/", controller.create);
+router.post("/", generationRateLimiter, controller.create);
 
-router.get("/", controller.list);
+router.get("/", retrievalRateLimiter, controller.list);
 
-router.get("/:generationId", controller.getByGenerationId);
+router.get(
+	"/:generationId",
+	retrievalRateLimiter,
+	controller.getByGenerationId,
+);
 
 export default router;

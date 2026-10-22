@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import { cors } from "./config/index.js";
+import { cors, env } from "./config/index.js";
 import routes from "./routes/api.js";
 import { errorHandler, notFound } from "./lib/index.js";
 // import { requestMetadata } from "../shared/index.js";
@@ -23,7 +23,16 @@ const app = express();
 
 app.use(cors);
 
-app.use(express.json());
+// app.use(express.json());
+/**
+ * The JSON parser will now reject oversized payloads
+ * before the routes execute.
+ */
+app.use(
+	express.json({
+		limit: env.requestBodyLimit,
+	}),
+);
 
 app.use(cookieParser());
 

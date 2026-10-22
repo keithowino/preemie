@@ -38,6 +38,8 @@ const ErrorCodes = Object.freeze({
 	 */
 	METHOD_NOT_ALLOWED: "METHOD_NOT_ALLOWED",
 
+	CONTENT_TOO_LARGE: "CONTENT_TOO_LARGE",
+
 	/**
 	 * The request content type is not supported.
 	 */
