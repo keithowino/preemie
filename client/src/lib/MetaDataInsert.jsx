@@ -1,18 +1,18 @@
 import { Helmet } from "react-helmet-async";
-import data from "./data";
+import { platform } from "./config/index.js";
 
-const MetaDataInsert = ({ title = data.metadata.name }) => {
+const MetaDataInsert = ({ title = platform.name }) => {
 	let pageTitle =
-		title === data.metadata.name
-			? `${title} - ${data.metadata.parentCompany.name}`
-			: `${title} - ${data.metadata.name}`;
+		title === platform.name
+			? `${title} - ${platform.author}`
+			: `${title} - ${platform.name}`;
 
 	return (
 		<Helmet>
 			<title>{pageTitle}</title>
 			<meta
 				name="description"
-				content={`${data.metadata.name} - Learn as i build template.`}
+				content={`${platform.name} - AI-powered ideation tool for DIY innovators.`}
 			/>
 			<meta
 				name="keywords"

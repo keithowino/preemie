@@ -1,40 +1,36 @@
 # Preemie Folder Structure
 
-Generated on: 2026-10-20
+Generated on: 2026-10-22
 
 ```bash
 ├── client/
 │   ├── public/
 │   │   └── site_image.png
 │   ├── src/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   │   └── Layout.jsx
-│   │   ├── lib/
-│   │   │   ├── components/
-│   │   │   │   ├── layout/
-│   │   │   │   │   ├── Footer.jsx
-│   │   │   │   │   ├── Header.jsx
+│   │   ├── app/
+│   │   │   ├── lib/
+│   │   │   │   ├── components/
 │   │   │   │   │   ├── index.js
-│   │   │   │   │   └── Navbar.jsx
-│   │   │   │   ├── Explore.jsx
+│   │   │   │   │   └── ScrollToTop.jsx
+│   │   │   │   ├── config/
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   └── platform.js
 │   │   │   │   ├── index.js
-│   │   │   │   ├── Landing.jsx
-│   │   │   │   ├── LightBulb.jsx
-│   │   │   │   └── WorkSpace.jsx
-│   │   │   ├── config/
+│   │   │   │   └── MetaDataInsert.jsx
+│   │   │   ├── providers/
+│   │   │   │   ├── AppProviders.jsx
+│   │   │   │   └── index.js
+│   │   │   ├── router/
+│   │   │   │   ├── AppRouter.jsx
 │   │   │   │   ├── index.js
-│   │   │   │   └── platform.js
-│   │   │   ├── data.js
-│   │   │   ├── geminiService.js
-│   │   │   ├── index.js
-│   │   │   └── MetaDataInsert.jsx
-│   │   ├── pages/
-│   │   │   └── Home.jsx
+│   │   │   │   └── RouteConfiguration.jsx
+│   │   │   └── index.js
 │   │   ├── App.jsx
 │   │   ├── index.css
 │   │   └── main.jsx
 │   ├── .env.development
+│   ├── .env.example
+│   ├── .env.production
 │   ├── .gitignore
 │   ├── eslint.config.js
 │   ├── index.html
@@ -48,46 +44,80 @@ Generated on: 2026-10-20
 │   └── generate-structure.js
 ├── server/
 │   ├── src/
-│   │   └── app/
-│   │       ├── bootstrap/
-│   │       │   ├── database.js
-│   │       │   └── index.js
-│   │       ├── config/
-│   │       │   ├── cors.js
-│   │       │   ├── env.js
-│   │       │   └── index.js
-│   │       ├── lib/
-│   │       │   ├── constants/
-│   │       │   │   ├── httpStatus.js
-│   │       │   │   └── index.js
-│   │       │   ├── utils/
-│   │       │   │   ├── apiResponse.js
-│   │       │   │   └── index.js
-│   │       │   └── index.js
-│   │       ├── modules/
-│   │       │   ├── ideations/
-│   │       │   │   ├── models/
-│   │       │   │   │   ├── Ideation.js
-│   │       │   │   │   └── index.js
-│   │       │   │   ├── providers/
-│   │       │   │   │   ├── gemini.client.js
-│   │       │   │   │   ├── gemini.provider.js
-│   │       │   │   │   └── index.js
-│   │       │   │   ├── validators/
-│   │       │   │   │   ├── ideation.schema.js
-│   │       │   │   │   └── index.js
-│   │       │   │   └── index.js
-│   │       │   └── index.js
-│   │       ├── routes/
-│   │       │   ├── api.js
-│   │       │   └── index.js
-│   │       ├── app.js
-│   │       ├── index.js
-│   │       └── server.js
+│   │   ├── app/
+│   │   │   ├── bootstrap/
+│   │   │   │   ├── database.js
+│   │   │   │   └── index.js
+│   │   │   ├── config/
+│   │   │   │   ├── middleware/
+│   │   │   │   │   ├── ideationRateLimiters.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── cors.js
+│   │   │   │   ├── env.js
+│   │   │   │   └── index.js
+│   │   │   ├── lib/
+│   │   │   │   ├── constants/
+│   │   │   │   │   ├── httpStatus.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── utils/
+│   │   │   │   │   ├── error/
+│   │   │   │   │   │   ├── appError.js
+│   │   │   │   │   │   ├── errorCodes.js
+│   │   │   │   │   │   ├── errorHandler.js
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── notFound.js
+│   │   │   │   │   ├── validation/
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── validateRequest.js
+│   │   │   │   │   ├── apiResponse.js
+│   │   │   │   │   ├── asyncHandler.js
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   └── presenter.js
+│   │   │   │   └── index.js
+│   │   │   ├── routes/
+│   │   │   │   ├── api.js
+│   │   │   │   └── index.js
+│   │   │   ├── app.js
+│   │   │   ├── index.js
+│   │   │   └── server.js
+│   │   ├── modules/
+│   │   │   ├── ideations/
+│   │   │   │   ├── controllers/
+│   │   │   │   │   ├── ideation.controller.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── models/
+│   │   │   │   │   ├── Ideation.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── providers/
+│   │   │   │   │   ├── gemini.client.js
+│   │   │   │   │   ├── gemini.provider.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── repositories/
+│   │   │   │   │   ├── ideation.repository.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── routes/
+│   │   │   │   │   ├── ideation.routes.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── ideation.service.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── validators/
+│   │   │   │   │   ├── ideation.schema.js
+│   │   │   │   │   └── index.js
+│   │   │   │   └── index.js
+│   │   │   └── index.js
+│   │   └── index.js
+│   ├── tests/
+│   │   ├── rest/
+│   │   │   └── ideation.rest
+│   │   └── unit/
+│   │       └── integration/
 │   ├── .env.development
 │   ├── .env.example
 │   ├── .env.production
 │   ├── .gitignore
+│   ├── apiClientConnection.js
+│   ├── checkModelSupport.js
 │   └── package.json
 ├── .gitignore
 ├── package.json

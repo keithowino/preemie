@@ -8,49 +8,49 @@ POST {{baseUrl}}/ideations
 Content-Type: application/json
 Accept: application/json
 
-# {
-#   "materials": [
-#     {
-#       "name": "Plastic bottles",
-#       "quantity": 5,
-#       "unit": "pieces",
-#       "condition": "Clean and intact"
-#     },
-#     {
-#       "name": "Scrap wood",
-#       "quantity": 4,
-#       "unit": "pieces",
-#       "condition": "Dry and usable"
-#     }
-#   ],
-#   "constraints": {
-#     "goal": "Create useful household items from available materials",
-#     "environment": "Small home workshop",
-#     "skillLevel": "BEGINNER",
-#     "notes": "Prefer simple hand tools and low-cost additional materials."
-#   }
-# }
-
 {
   "materials": [
     {
-      "name": "Magnet",
-      "quantity": 1,
-      "condition": "It is magnetic"
+      "name": "Plastic bottles",
+      "quantity": 5,
+      "unit": "pieces",
+      "condition": "Clean and intact"
     },
     {
-      "name": "Cellphone batteries",
-      "quantity": 3,
-      "condition": "Functioning"
+      "name": "Scrap wood",
+      "quantity": 4,
+      "unit": "pieces",
+      "condition": "Dry and usable"
     }
   ],
   "constraints": {
-    "goal": "Create useful pass-time DIY items from available materials",
+    "goal": "Create useful household items from available materials",
     "environment": "Small home workshop",
     "skillLevel": "BEGINNER",
     "notes": "Prefer simple hand tools and low-cost additional materials."
   }
 }
+
+# {
+#   "materials": [
+#     {
+#       "name": "Magnet",
+#       "quantity": 1,
+#       "condition": "It is magnetic"
+#     },
+#     {
+#       "name": "Cellphone batteries",
+#       "quantity": 3,
+#       "condition": "Functioning"
+#     }
+#   ],
+#   "constraints": {
+#     "goal": "Create useful pass-time DIY items from available materials",
+#     "environment": "Small home workshop",
+#     "skillLevel": "BEGINNER",
+#     "notes": "Prefer simple hand tools and low-cost additional materials."
+#   }
+# }
 
 ### Retrieve generation
 

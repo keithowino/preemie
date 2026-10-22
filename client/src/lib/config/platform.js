@@ -3,7 +3,9 @@ export const platform = {
 
 	author: "Pickaxe & Shovel",
 
-	description: "",
+	excerpt: "Start with what you have. Discover what you can make.",
+
+	description: "AI-powered ideation tool for DIY innovators.",
 
 	location: {
 		name: "Tassia Complex",
