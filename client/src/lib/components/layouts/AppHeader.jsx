@@ -1,7 +1,45 @@
+import { useLayoutEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { platform } from "../../config/index.js";
 
+import { gsap } from "gsap";
+
+const TAGLINE = ["Make.", "Test.", "Improve."];
+
 export default function AppHeader() {
+	const taglineRef = useRef(null);
+
+	useLayoutEffect(() => {
+		const mm = gsap.matchMedia();
+
+		mm.add("(prefers-reduced-motion: no-preference)", () => {
+			const ctx = gsap.context(() => {
+				const tl = gsap.timeline({ delay: 0.3 });
+
+				tl.from("[data-word]", {
+					yPercent: 110,
+					opacity: 0,
+					duration: 0.7,
+					ease: "power3.out",
+					stagger: 0.18,
+				}).from(
+					"[data-underline]",
+					{
+						scaleX: 0,
+						transformOrigin: "left center",
+						duration: 0.5,
+						ease: "power2.out",
+					},
+					"-=0.2",
+				);
+			}, taglineRef);
+
+			return () => ctx.revert();
+		});
+
+		return () => mm.revert();
+	}, []);
+
 	return (
 		<header className="border-b border-border bg-canvas">
 			<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -39,8 +77,30 @@ export default function AppHeader() {
 					</span>
 				</Link>
 
-				<span className="hidden text-sm font-medium text-muted sm:block">
-					Make. Test. Improve.
+				<span
+					ref={taglineRef}
+					className="hidden items-center gap-1.5 text-sm font-medium text-muted sm:flex"
+				>
+					{TAGLINE.map((word, i) => {
+						const isLast = i === TAGLINE.length - 1;
+						return (
+							<span
+								key={word}
+								className="relative inline-block overflow-hidden pb-1"
+							>
+								<span data-word className="inline-block">
+									{word}
+								</span>
+								{isLast && (
+									<span
+										data-underline
+										aria-hidden="true"
+										className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-sage"
+									/>
+								)}
+							</span>
+						);
+					})}
 				</span>
 			</div>
 		</header>

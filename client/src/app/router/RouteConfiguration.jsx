@@ -1,4 +1,5 @@
-import { useRoutes } from "react-router-dom";
+import { Navigate, useRoutes } from "react-router-dom";
+import { ideationRoutes } from "../../modules/index.js";
 
 /**
  * React Query will manage asynchronous query states,
@@ -12,7 +13,13 @@ import { useRoutes } from "react-router-dom";
  */
 
 function ApplicationRoutes() {
-	return useRoutes([]);
+	return useRoutes([
+		...ideationRoutes,
+		{
+			path: "*",
+			element: <Navigate to="/" replace />,
+		},
+	]);
 }
 
 export default function RouterConfiguration() {
