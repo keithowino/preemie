@@ -1,22 +1,14 @@
 # Preemie Folder Structure
 
-Generated on: 2026-10-22
+Generated on: 2026-10-24
 
 ```bash
 ├── client/
-│   ├── public/
-│   │   └── site_image.png
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── lib/
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── index.js
-│   │   │   │   │   └── ScrollToTop.jsx
-│   │   │   │   ├── config/
-│   │   │   │   │   ├── index.js
-│   │   │   │   │   └── platform.js
-│   │   │   │   ├── index.js
-│   │   │   │   └── MetaDataInsert.jsx
+│   │   │   ├── config/
+│   │   │   │   ├── env.js
+│   │   │   │   └── index.js
 │   │   │   ├── providers/
 │   │   │   │   ├── AppProviders.jsx
 │   │   │   │   └── index.js
@@ -24,6 +16,61 @@ Generated on: 2026-10-22
 │   │   │   │   ├── AppRouter.jsx
 │   │   │   │   ├── index.js
 │   │   │   │   └── RouteConfiguration.jsx
+│   │   │   └── index.js
+│   │   ├── lib/
+│   │   │   ├── components/
+│   │   │   │   ├── layouts/
+│   │   │   │   │   ├── featureGrid/
+│   │   │   │   │   │   ├── FeatureGrid.jsx
+│   │   │   │   │   │   └── index.js
+│   │   │   │   │   ├── AppFooter.jsx
+│   │   │   │   │   ├── AppHeader.jsx
+│   │   │   │   │   ├── AppShell.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── ui/
+│   │   │   │   │   ├── button/
+│   │   │   │   │   │   ├── Button.jsx
+│   │   │   │   │   │   ├── button.styles.js
+│   │   │   │   │   │   └── index.js
+│   │   │   │   │   ├── container/
+│   │   │   │   │   │   ├── Container.jsx
+│   │   │   │   │   │   └── index.js
+│   │   │   │   │   ├── section/
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── Section.jsx
+│   │   │   │   │   ├── typography/
+│   │   │   │   │   │   ├── Heading.jsx
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── Text.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── ScrollToTop.jsx
+│   │   │   ├── config/
+│   │   │   │   ├── index.js
+│   │   │   │   └── platform.js
+│   │   │   ├── utils/
+│   │   │   │   ├── index.js
+│   │   │   │   ├── styles.js
+│   │   │   │   └── validateIdeationInput.js
+│   │   │   ├── index.js
+│   │   │   └── MetaDataInsert.jsx
+│   │   ├── modules/
+│   │   │   ├── ideations/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── IdeationConstraintsForm.jsx
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── MaterialEditor.jsx
+│   │   │   │   │   └── StepHeader.jsx
+│   │   │   │   ├── constants/
+│   │   │   │   │   ├── ideationExamples.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── pages/
+│   │   │   │   │   ├── HomePage.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── routes/
+│   │   │   │   │   ├── ideation.routes.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   └── index.js
 │   │   │   └── index.js
 │   │   ├── App.jsx
 │   │   ├── index.css

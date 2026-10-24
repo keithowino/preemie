@@ -47,7 +47,7 @@ client/src/lib/components/
 - Update index.css, tailwind.config.js and the HTML metadata where necessary.
   Deliverable: A consistent, responsive design system with an application shell.
 
-## Phase 3 — Home page and input experience
+## Phase 3 — Home page and input experience ( covered )
 
 Build the first complete user-facing screen.
 
@@ -61,7 +61,7 @@ Create response: The supplied example demonstrates the retrieval response, not t
 - Handle submission state and prevent accidental duplicate requests.
   Deliverable: Users can prepare valid ideation requests through the interface.
 
-## Phase 4 — API integration and generation flow
+## Phase 4 — API integration and generation flow ( covered )
 
 Connect the form to the existing backend.
 
@@ -73,7 +73,7 @@ Connect the form to the existing backend.
 - Handle validation errors, rate limits, provider failures, network errors and timeouts.
   Deliverable: A submitted form creates a persisted generation and navigates to its results.
 
-## Phase 5 — Ideas comparison page
+## Phase 5 — Ideas comparison page ( partially covered )
 
 Implement the decision-making screen using persisted API data.
 
@@ -122,36 +122,7 @@ Verify the complete workflow rather than only individual components.
 - Verify production routing and deployment configuration.
   Deliverable: A documented, deployable MVP.
 
-## Proposed frontend organization
-
-```text
-client/
-└── src/
-    ├── app/
-    │   ├── providers/
-    │   │   └── AppProviders.jsx
-    │   ├── router/
-    │   │   ├── AppRouter.jsx
-    │   │   └── RouteConfiguration.jsx
-    │   └── index.js
-    ├── lib/
-    │   ├── api/
-    │   ├── components/
-    │   │   ├── layouts/
-    │   │   └── ui/
-    │   ├── config/
-    │   └── MetaDataInsert.jsx
-    ├── modules/
-    │   └── ideations/
-    │       ├── api/
-    │       ├── components/
-    │       ├── hooks/
-    │       ├── pages/
-    │       └── index.js
-    ├── App.jsx
-    ├── index.css
-    └── main.jsx
-```
+---
 
 React Query should manage server state, caching, loading and error states. Local form state should manage the materials editor and unsent constraints. We should not duplicate retrieved generations in a separate global state store.
 

@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:5000/api/v1
 # @generationId = GENERATION_ID
-@generationId = 0703d4be-9252-411c-ae06-cd491d682da2
+@generationId = d246629b-76aa-4e7c-aaee-bbd4fe250f14
 
 ### create and persist an ideation
 

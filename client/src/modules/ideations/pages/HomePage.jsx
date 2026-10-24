@@ -9,11 +9,14 @@ import {
 	Container,
 	FeatureGrid,
 	Heading,
+	MetaDataInsert,
 	platform,
 	Section,
 	Text,
 	validateIdeationInput,
 } from "../../../lib/index.js";
+import { useNavigate } from "react-router-dom";
+import { createIdeation } from "../services/index.js";
 
 const INITIAL_MATERIALS = [
 	{
@@ -42,6 +45,9 @@ export default function HomePage() {
 	const [errors, setErrors] = useState(INITIAL_ERRORS);
 	const [selectedExampleId, setSelectedExampleId] = useState(null);
 	const [feedback, setFeedback] = useState(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const navigate = useNavigate();
 
 	function handleMaterialsChange(nextMaterials) {
 		setMaterials(nextMaterials);
@@ -68,8 +74,12 @@ export default function HomePage() {
 		setFeedback(null);
 	}
 
-	function handleSubmit(event) {
+	async function handleSubmit(event) {
 		event.preventDefault();
+
+		if (isSubmitting) {
+			return;
+		}
 
 		const validation = validateIdeationInput({
 			materials,
@@ -87,169 +97,243 @@ export default function HomePage() {
 			return;
 		}
 
-		setFeedback({
-			type: "success",
-			message:
-				"Your project details are valid. Idea generation will be connected in the API integration phase.",
-		});
+		/**
+		 * Convert UI values into the shape expected by the backend schema.
+		 */
+		const input = {
+			materials: materials.map((material) => ({
+				name: material.name.trim(),
+				quantity: Number(material.quantity),
+				unit: material.unit.trim(),
+				condition: material.condition.trim(),
+				...(material.specifications?.trim()
+					? { specifications: material.specifications.trim() }
+					: {}),
+			})),
+
+			/**
+			 * Empty optional strings should not be sent as values.
+			 */
+			constraints: Object.fromEntries(
+				Object.entries(constraints).filter(
+					([, value]) =>
+						typeof value === "string" && value.trim().length > 0,
+				),
+			),
+		};
+
+		setIsSubmitting(true);
+		setFeedback(null);
+
+		try {
+			const ideation = await createIdeation(input);
+
+			// createIdeation validates the response before returning.
+			navigate(`/ideas/${encodeURIComponent(ideation.generationId)}`);
+		} catch (error) {
+			let message =
+				"We couldn't generate your ideas. Your entries are still here; please try again.";
+
+			if (error?.code === "REQUEST_TIMEOUT") {
+				message =
+					"The request timed out. Your entries are still here. Please try again.";
+			} else if (error?.code === "NETWORK_ERROR") {
+				message =
+					"We couldn't connect to the server. Check your connection and try again.";
+			} else if (error?.status === 400) {
+				message =
+					error.message ||
+					"Some submitted details were rejected. Review your entries and try again.";
+			} else if (error?.status === 429) {
+				message =
+					error.message ||
+					"Too many requests have been made. Please wait a little before trying again.";
+			} else if (error?.status >= 500) {
+				message =
+					"The generation service is temporarily unavailable. Your entries are still here; please try again.";
+			} else if (error?.code === "INVALID_RESPONSE") {
+				message =
+					"The server returned an unexpected response. Please try again.";
+			}
+
+			setFeedback({
+				type: "error",
+				message,
+			});
+		} finally {
+			setIsSubmitting(false);
+		}
 	}
 
 	return (
-		<Container>
-			<Section className="relative overflow-hidden rounded-card border border-border bg-sage p-6 sm:p-10 lg:p-12">
-				<div
-					aria-hidden="true"
-					className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full border-[32px] border-white/30 sm:h-72 sm:w-72"
-				/>
+		<>
+			<MetaDataInsert title={platform.name} />
 
-				<div className="relative max-w-3xl">
-					<Text className="font-semibold uppercase tracking-[0.2em]">
-						The resourceful design studio
-					</Text>
+			<Container>
+				<Section className="relative overflow-hidden rounded-card border border-border bg-sage p-6 sm:p-10 lg:p-12">
+					<div
+						aria-hidden="true"
+						className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full border-[32px] border-white/30 sm:h-72 sm:w-72"
+					/>
 
-					<Heading level={1} className="max-w-2xl tracking-tight">
-						{platform.excerpt}
-					</Heading>
+					<div className="relative max-w-3xl">
+						<Text className="font-semibold uppercase tracking-[0.2em]">
+							The resourceful design studio
+						</Text>
 
-					<Text className="mt-5 max-w-2xl text-graphite/80 sm:!text-lg">
-						Tell {platform.name} which materials you have available
-						and what you want to achieve. Explore practical ideas
-						built around reuse, improvement, and invention.
-					</Text>
+						<Heading level={1} className="max-w-2xl tracking-tight">
+							{platform.excerpt}
+						</Heading>
 
-					<a
-						href="#project-form"
-						className="mt-7 inline-flex items-center justify-center rounded-control bg-graphite px-5 py-3 font-semibold text-white transition hover:bg-graphite/85"
-					>
-						Start creating
-						<span aria-hidden="true" className="ml-2">
-							↓
-						</span>
-					</a>
-				</div>
-			</Section>
+						<Text className="mt-5 max-w-2xl text-graphite/80 sm:!text-lg">
+							Tell {platform.name} which materials you have
+							available and what you want to achieve. Explore
+							practical ideas built around reuse, improvement, and
+							invention.
+						</Text>
 
-			<Section aria-labelledby="examples-heading" className="mt-10">
-				<div>
-					<Text className="font-semibold uppercase tracking-[0.16em]">
-						Need a starting point?
-					</Text>
-
-					<Heading level={2} id="examples-heading">
-						Try an example
-					</Heading>
-
-					<Text className="mt-2">
-						Choose a starting point to populate the form. You can
-						change any of its details afterward.
-					</Text>
-				</div>
-
-				<FeatureGrid>
-					{IDEATION_EXAMPLES.map((example, index) => {
-						const isSelected = selectedExampleId === example.id;
-
-						return (
-							<button
-								key={example.id}
-								type="button"
-								onClick={() => applyExample(example)}
-								aria-pressed={isSelected}
-								className={`rounded-card border p-5 text-left transition ${
-									isSelected
-										? "border-signal bg-white ring-2 ring-signal/20"
-										: "border-border bg-white hover:border-graphite/40 hover:shadow-sm"
-								}`}
-							>
-								<span className="flex items-center justify-between gap-3">
-									<span className="text-sm font-semibold uppercase tracking-wider text-muted">
-										{String(index + 1).padStart(2, "0")}
-									</span>
-
-									<span
-										className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-											isSelected
-												? "bg-signal text-white"
-												: "bg-canvas text-muted"
-										}`}
-									>
-										{isSelected
-											? "Selected"
-											: "Use example"}
-									</span>
-								</span>
-
-								<span className="mt-4 block text-lg font-bold">
-									{example.label}
-								</span>
-
-								<span className="mt-2 block text-sm leading-6 text-muted">
-									{example.description}
-								</span>
-
-								<span className="mt-4 block text-xs font-medium text-graphite">
-									{example.materials.length} example materials
-								</span>
-							</button>
-						);
-					})}
-				</FeatureGrid>
-			</Section>
-
-			<form
-				id="project-form"
-				onSubmit={handleSubmit}
-				noValidate
-				className="mt-12 space-y-10"
-			>
-				<MaterialEditor
-					materials={materials}
-					onChange={handleMaterialsChange}
-					errors={errors}
-				/>
-
-				<div className="border-t border-border" />
-
-				<IdeationConstraintsForm
-					constraints={constraints}
-					onChange={handleConstraintsChange}
-					errors={errors.constraints}
-				/>
-
-				<div className="border-t border-border pt-6">
-					{feedback && (
-						<Text
-							className={`mb-5 rounded-control border px-4 py-3 ${
-								feedback.type === "error"
-									? "border-red-200 bg-red-50 text-red-800"
-									: "border-green-200 bg-green-50 text-green-900"
-							}`}
-							role="status"
-							aria-live="polite"
+						<a
+							href="#project-form"
+							className="mt-7 inline-flex items-center justify-center rounded-control bg-graphite px-5 py-3 font-semibold text-white transition hover:bg-graphite/85"
 						>
-							{feedback.message}
-						</Text>
-					)}
-
-					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-						<Text className="max-w-xl">
-							{platform.name} will use your materials and
-							preferences to explore three different approaches to
-							making something useful.
-						</Text>
-
-						{/**
-						 * The temporary button bellow says “Validate project details” rather than “Generate ideas” because this step does not yet call the API. That avoids implying that ideas have been generated when no request has been sent.
-						 */}
-						<Button className="rounded-control" variant="secondary">
-							Validate project details
+							Start creating
 							<span aria-hidden="true" className="ml-2">
-								→
+								↓
 							</span>
-						</Button>
+						</a>
 					</div>
-				</div>
-			</form>
-		</Container>
+				</Section>
+
+				<Section aria-labelledby="examples-heading" className="mt-10">
+					<div>
+						<Text className="font-semibold uppercase tracking-[0.16em]">
+							Need a starting point?
+						</Text>
+
+						<Heading level={2} id="examples-heading">
+							Try an example
+						</Heading>
+
+						<Text className="mt-2">
+							Choose a starting point to populate the form. You
+							can change any of its details afterward.
+						</Text>
+					</div>
+
+					<FeatureGrid>
+						{IDEATION_EXAMPLES.map((example, index) => {
+							const isSelected = selectedExampleId === example.id;
+
+							return (
+								<button
+									key={example.id}
+									type="button"
+									onClick={() => applyExample(example)}
+									aria-pressed={isSelected}
+									className={`rounded-card border p-5 text-left transition ${
+										isSelected
+											? "border-signal bg-white ring-2 ring-signal/20"
+											: "border-border bg-white hover:border-graphite/40 hover:shadow-sm"
+									}`}
+								>
+									<span className="flex items-center justify-between gap-3">
+										<span className="text-sm font-semibold uppercase tracking-wider text-muted">
+											{String(index + 1).padStart(2, "0")}
+										</span>
+
+										<span
+											className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+												isSelected
+													? "bg-signal text-white"
+													: "bg-canvas text-muted"
+											}`}
+										>
+											{isSelected
+												? "Selected"
+												: "Use example"}
+										</span>
+									</span>
+
+									<span className="mt-4 block text-lg font-bold">
+										{example.label}
+									</span>
+
+									<span className="mt-2 block text-sm leading-6 text-muted">
+										{example.description}
+									</span>
+
+									<span className="mt-4 block text-xs font-medium text-graphite">
+										{example.materials.length} example
+										materials
+									</span>
+								</button>
+							);
+						})}
+					</FeatureGrid>
+				</Section>
+
+				<form
+					id="project-form"
+					onSubmit={handleSubmit}
+					noValidate
+					className="mt-12 space-y-10"
+				>
+					<MaterialEditor
+						materials={materials}
+						onChange={handleMaterialsChange}
+						errors={errors}
+					/>
+
+					<div className="border-t border-border" />
+
+					<IdeationConstraintsForm
+						constraints={constraints}
+						onChange={handleConstraintsChange}
+						errors={errors.constraints}
+					/>
+
+					<div className="border-t border-border pt-6">
+						{feedback && (
+							<Text
+								className={`mb-5 rounded-control border px-4 py-3 ${
+									feedback.type === "error"
+										? "border-red-200 bg-red-50 text-red-800"
+										: "border-green-200 bg-green-50 text-green-900"
+								}`}
+								role="status"
+								aria-live="polite"
+							>
+								{feedback.message}
+							</Text>
+						)}
+
+						<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+							<Text className="max-w-xl">
+								{platform.name} will use your materials and
+								preferences to explore three different
+								approaches to making something useful.
+							</Text>
+
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								className="rounded-control"
+								variant="secondary"
+							>
+								{isSubmitting
+									? "Generating ideas..."
+									: "Generate ideas"}
+
+								{!isSubmitting && (
+									<span aria-hidden="true" className="ml-2">
+										→
+									</span>
+								)}
+							</Button>
+						</div>
+					</div>
+				</form>
+			</Container>
+		</>
 	);
 }
