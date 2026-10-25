@@ -65,22 +65,22 @@ const envSchema = z.object({
 		.string()
 		.min(1, "CLOUDINARY_API_SECRET is required."),
 
-	// JWT_ACCESS_SECRET: z
-	// 	.string()
-	// 	.min(32, "JWT_ACCESS_SECRET must be at least 32 characters."),
+	JWT_ACCESS_SECRET: z
+		.string()
+		.min(32, "JWT_ACCESS_SECRET must be at least 32 characters."),
 
-	// JWT_REFRESH_SECRET: z
-	// 	.string()
-	// 	.min(32, "JWT_REFRESH_SECRET must be at least 32 characters."),
+	JWT_REFRESH_SECRET: z
+		.string()
+		.min(32, "JWT_REFRESH_SECRET must be at least 32 characters."),
 
 	// // JWT_ACCESS_EXPIRES: z.string().default("15m"),
-	// JWT_ACCESS_EXPIRES: z.string().default("1d"),
+	JWT_ACCESS_EXPIRES: z.string().default("1d"),
 
-	// JWT_REFRESH_EXPIRES: z.string().default("7d"),
+	JWT_REFRESH_EXPIRES: z.string().default("7d"),
 
-	// JWT_ISSUER: z.string().default("pickaxe-and-shovel"),
+	JWT_ISSUER: z.string().default("preemie-three"),
 
-	// JWT_AUDIENCE: z.string().default("pickaxe-and-shovel-client"),
+	JWT_AUDIENCE: z.string().default("preemie-three-client"),
 
 	// RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required."),
 
@@ -114,14 +114,14 @@ export const env = {
 		apiSecret: parsedEnv.data.CLOUDINARY_API_SECRET,
 	},
 
-	// jwt: {
-	// 	accessSecret: parsedEnv.data.JWT_ACCESS_SECRET,
-	// 	refreshSecret: parsedEnv.data.JWT_REFRESH_SECRET,
-	// 	accessExpires: parsedEnv.data.JWT_ACCESS_EXPIRES,
-	// 	refreshExpires: parsedEnv.data.JWT_REFRESH_EXPIRES,
-	// 	issuer: parsedEnv.data.JWT_ISSUER,
-	// 	audience: parsedEnv.data.JWT_AUDIENCE,
-	// },
+	jwt: {
+		accessSecret: parsedEnv.data.JWT_ACCESS_SECRET,
+		refreshSecret: parsedEnv.data.JWT_REFRESH_SECRET,
+		accessExpires: parsedEnv.data.JWT_ACCESS_EXPIRES,
+		refreshExpires: parsedEnv.data.JWT_REFRESH_EXPIRES,
+		issuer: parsedEnv.data.JWT_ISSUER,
+		audience: parsedEnv.data.JWT_AUDIENCE,
+	},
 
 	gemini: {
 		apiKey: parsedEnv.data.GEMINI_API_KEY,

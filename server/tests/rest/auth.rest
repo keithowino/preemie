@@ -1,0 +1,18 @@
+@baseUrl = http://localhost:5000/api/v1
+
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFkZGQ3ZmIzZGE1M2RiYTUyMGQzODU5IiwiaWF0IjoxNzkyOTIzNjQzLCJleHAiOjE3OTMwMTAwNDMsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.e5htauZSkNYhdgx_gqVF4I0EUAMVuaavnS3mXIkJsH8
+
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJqdGkiOiIwM2I1Y2MzNS1mN2E1LTRlNDktYmU1ZS1kM2JkZTBlM2FkZjAiLCJpYXQiOjE3OTI5MjM2NDMsImV4cCI6MTc5NDEzMzI0MywiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.DJXMflO8t2LajiKMBd7nBh84MfjLIHzzNrGubNKlBYI
+
+### Register user
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "firstName": "Keith",
+    "lastName": "Owino",
+    "email": "designsolutions1629@gmail.com",
+    "phone": "+254768290857",
+    "password": "keith@1234"
+}

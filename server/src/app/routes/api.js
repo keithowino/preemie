@@ -2,7 +2,7 @@ import { Router } from "express";
 import { database } from "../bootstrap/index.js";
 import { success } from "../lib/index.js";
 
-import { ideationRoutes } from "../../modules/index.js";
+import { authRoutes, ideationRoutes } from "../../modules/index.js";
 
 const router = Router();
 
@@ -25,6 +25,7 @@ router.get("/health", (req, res) => {
 	);
 });
 
+router.use("/auth", authRoutes);
 router.use("/ideations", ideationRoutes);
 
 export default router;

@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import { cors, env } from "./config/index.js";
 import routes from "./routes/api.js";
 import { errorHandler, notFound } from "./lib/index.js";
-// import { requestMetadata } from "../shared/index.js";
+import { requestMetadata } from "./lib/index.js";
 
 const app = express();
 
@@ -36,7 +36,7 @@ app.use(
 
 app.use(cookieParser());
 
-// app.use(requestMetadata);
+app.use(requestMetadata);
 
 app.use("/api/v1", routes);
 
