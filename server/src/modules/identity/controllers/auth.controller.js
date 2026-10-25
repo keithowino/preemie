@@ -1,6 +1,7 @@
 import { authService } from "../services/index.js";
 import { userPresenter } from "../presenters/index.js";
 import {
+	loginRequestSchema,
 	// forgotPasswordRequestSchema,
 	// loginRequestSchema,
 	// logoutRequestSchema,
@@ -31,21 +32,21 @@ const register = asyncHandler(async (req, res) => {
 	return success(res, result);
 });
 
-// const login = asyncHandler(async (req, res) => {
-// 	const { body } = validateRequest(
-// 		{
-// 			body: loginRequestSchema,
-// 		},
-// 		req,
-// 	);
+const login = asyncHandler(async (req, res) => {
+	const { body } = validateRequest(
+		{
+			body: loginRequestSchema,
+		},
+		req,
+	);
 
-// 	const result = await authService.login({
-// 		data: body,
-// 		requestMetadata: req.requestMetadata,
-// 	});
+	const result = await authService.login({
+		data: body,
+		requestMetadata: req.requestMetadata,
+	});
 
-// 	return success(res, result);
-// });
+	return success(res, result);
+});
 
 // const refresh = asyncHandler(async (req, res) => {
 // 	const { body } = validateRequest(
@@ -117,7 +118,7 @@ const register = asyncHandler(async (req, res) => {
 export default {
 	// sessions,
 	register,
-	// login,
+	login,
 	// refresh,
 	// logout,
 	// revokeSession,

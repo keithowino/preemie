@@ -1,8 +1,12 @@
 @baseUrl = http://localhost:5000/api/v1
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFkZGQ3ZmIzZGE1M2RiYTUyMGQzODU5IiwiaWF0IjoxNzkyOTIzNjQzLCJleHAiOjE3OTMwMTAwNDMsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.e5htauZSkNYhdgx_gqVF4I0EUAMVuaavnS3mXIkJsH8
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFkZTYwMmExZmVlZjlhMzY1YzJmZWNhIiwiaWF0IjoxNzkyOTU4NTA2LCJleHAiOjE3OTMwNDQ5MDYsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.jojyf3ePvguIHabnHRemSfhDnP4zXXVh1eWBfAU2F5w
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJqdGkiOiIwM2I1Y2MzNS1mN2E1LTRlNDktYmU1ZS1kM2JkZTBlM2FkZjAiLCJpYXQiOjE3OTI5MjM2NDMsImV4cCI6MTc5NDEzMzI0MywiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.DJXMflO8t2LajiKMBd7nBh84MfjLIHzzNrGubNKlBYI
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJqdGkiOiIxZTA1ZDE1MC00MmI4LTQwNjMtOTI3Ny0wZGZhZWUzMzFkMTQiLCJpYXQiOjE3OTI5NTg1MDYsImV4cCI6MTc5NDE2ODEwNiwiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.mItmuKxQbfPE8HVqcwK8aDIA7VXRWCBqguwSxSV4RP0
+
+@email = designsolutions1629@gmail.com
+
+@password = keith@1234
 
 ### Register user
 
@@ -15,4 +19,14 @@ Content-Type: application/json
     "email": "designsolutions1629@gmail.com",
     "phone": "+254768290857",
     "password": "keith@1234"
+}
+
+### Login
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
 }

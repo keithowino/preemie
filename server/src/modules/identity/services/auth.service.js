@@ -52,40 +52,40 @@ class AuthService {
 		};
 	}
 
-	// async login({ data, requestMetadata }) {
-	// 	const user = await userRepository.findByEmail(data.email);
+	async login({ data, requestMetadata }) {
+		const user = await userRepository.findByEmail(data.email);
 
-	// 	/**
-	// 	 * Never reveal whether the email exists.
-	// 	 */
-	// 	if (!user) {
-	// 		throw new AppError(
-	// 			"Invalid email or password.",
-	// 			HTTP_STATUS.UNAUTHORIZED,
-	// 			ErrorCodes.UNAUTHORIZED,
-	// 		);
-	// 	}
+		/**
+		 * Never reveal whether the email exists.
+		 */
+		if (!user) {
+			throw new AppError(
+				"Invalid email or password.",
+				HTTP_STATUS.UNAUTHORIZED,
+				ErrorCodes.UNAUTHORIZED,
+			);
+		}
 
-	// 	const passwordMatches = await passwordService.compare(
-	// 		data.password,
-	// 		user.password,
-	// 	);
+		const passwordMatches = await passwordService.compare(
+			data.password,
+			user.password,
+		);
 
-	// 	if (!passwordMatches) {
-	// 		throw new AppError(
-	// 			"Invalid email or password.",
-	// 			HTTP_STATUS.UNAUTHORIZED,
-	// 			ErrorCodes.UNAUTHORIZED,
-	// 		);
-	// 	}
+		if (!passwordMatches) {
+			throw new AppError(
+				"Invalid email or password.",
+				HTTP_STATUS.UNAUTHORIZED,
+				ErrorCodes.UNAUTHORIZED,
+			);
+		}
 
-	// 	const tokens = await sessionService.create(user, requestMetadata);
+		const tokens = await sessionService.create(user, requestMetadata);
 
-	// 	return {
-	// 		user: userPresenter.present(user),
-	// 		...tokens,
-	// 	};
-	// }
+		return {
+			user: userPresenter.present(user),
+			...tokens,
+		};
+	}
 
 	// async refresh(refreshToken, metadata = {}) {
 	// 	return sessionService.rotate(refreshToken, metadata);
