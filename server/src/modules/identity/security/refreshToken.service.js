@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import { env } from "../../../app/index.js";
+import { AppError, env, ErrorCodes, HTTP_STATUS } from "../../../app/index.js";
 
 class RefreshTokenService {
 	generate(user) {
@@ -18,28 +18,28 @@ class RefreshTokenService {
 		);
 	}
 
-	// verify(token) {
-	// 	try {
-	// 		return jwt.verify(token, env.jwt.refreshSecret, {
-	// 			issuer: env.jwt.issuer,
-	// 			audience: env.jwt.audience,
-	// 		});
-	// 	} catch (error) {
-	// 		if (error.name === "TokenExpiredError") {
-	// 			throw new AppError(
-	// 				"Refresh token has expired.",
-	// 				HTTP_STATUS.UNAUTHORIZED,
-	// 				ErrorCodes.UNAUTHORIZED,
-	// 			);
-	// 		}
+	verify(token) {
+		try {
+			return jwt.verify(token, env.jwt.refreshSecret, {
+				issuer: env.jwt.issuer,
+				audience: env.jwt.audience,
+			});
+		} catch (error) {
+			if (error.name === "TokenExpiredError") {
+				throw new AppError(
+					"Refresh token has expired.",
+					HTTP_STATUS.UNAUTHORIZED,
+					ErrorCodes.UNAUTHORIZED,
+				);
+			}
 
-	// 		throw new AppError(
-	// 			"Invalid refresh token.",
-	// 			HTTP_STATUS.UNAUTHORIZED,
-	// 			ErrorCodes.UNAUTHORIZED,
-	// 		);
-	// 	}
-	// }
+			throw new AppError(
+				"Invalid refresh token.",
+				HTTP_STATUS.UNAUTHORIZED,
+				ErrorCodes.UNAUTHORIZED,
+			);
+		}
+	}
 }
 
 export default new RefreshTokenService();

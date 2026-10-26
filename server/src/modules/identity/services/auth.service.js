@@ -19,9 +19,9 @@ import { userPresenter } from "../presenters/index.js";
  * Orchestrates authentication workflows (register, login, logout, resetPassword).
  */
 class AuthService {
-	// async sessions(userId, currentSessionId) {
-	// 	return sessionService.list(userId, currentSessionId);
-	// }
+	async sessions(userId, currentSessionId) {
+		return sessionService.list(userId, currentSessionId);
+	}
 
 	async register({ data, requestMetadata }) {
 		const existingUser = await userRepository.findByEmail(data.email);
@@ -87,21 +87,21 @@ class AuthService {
 		};
 	}
 
-	// async refresh(refreshToken, metadata = {}) {
-	// 	return sessionService.rotate(refreshToken, metadata);
-	// }
+	async refresh(refreshToken, metadata = {}) {
+		return sessionService.rotate(refreshToken, metadata);
+	}
 
-	// async logout(refreshToken) {
-	// 	return sessionService.logout(refreshToken);
-	// }
+	async logout(refreshToken) {
+		return sessionService.logout(refreshToken);
+	}
 
-	// async revokeSession(userId, sessionId) {
-	// 	return sessionService.revoke(userId, sessionId);
-	// }
+	async revokeSession(userId, sessionId) {
+		return sessionService.revoke(userId, sessionId);
+	}
 
-	// async revokeOtherSessions(userId, currentSessionId) {
-	// 	return sessionService.revokeOthers(userId, currentSessionId);
-	// }
+	async revokeOtherSessions(userId, currentSessionId) {
+		return sessionService.revokeOthers(userId, currentSessionId);
+	}
 
 	// async forgotPassword(email) {
 	// 	const user = await userRepository.findByEmail(email);

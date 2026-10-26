@@ -1,6 +1,6 @@
 # Preemie Folder Structure
 
-Generated on: 2026-10-24
+Generated on: 2026-10-26
 
 ```bash
 ├── client/
@@ -18,6 +18,9 @@ Generated on: 2026-10-24
 │   │   │   │   └── RouteConfiguration.jsx
 │   │   │   └── index.js
 │   │   ├── lib/
+│   │   │   ├── api/
+│   │   │   │   ├── apiClient.js
+│   │   │   │   └── index.js
 │   │   │   ├── components/
 │   │   │   │   ├── layouts/
 │   │   │   │   │   ├── featureGrid/
@@ -66,9 +69,13 @@ Generated on: 2026-10-24
 │   │   │   │   │   └── index.js
 │   │   │   │   ├── pages/
 │   │   │   │   │   ├── HomePage.jsx
+│   │   │   │   │   ├── IdeasPage.jsx
 │   │   │   │   │   └── index.js
 │   │   │   │   ├── routes/
 │   │   │   │   │   ├── ideation.routes.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── ideation.api.js
 │   │   │   │   │   └── index.js
 │   │   │   │   └── index.js
 │   │   │   └── index.js
@@ -113,8 +120,14 @@ Generated on: 2026-10-24
 │   │   │   │   │   │   ├── errorHandler.js
 │   │   │   │   │   │   ├── index.js
 │   │   │   │   │   │   └── notFound.js
-│   │   │   │   │   ├── validation/
+│   │   │   │   │   ├── http/
 │   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── requestMetadata.js
+│   │   │   │   │   ├── validation/
+│   │   │   │   │   │   ├── email.schema.js
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   ├── password.schema.js
+│   │   │   │   │   │   ├── phone.schema.js
 │   │   │   │   │   │   └── validateRequest.js
 │   │   │   │   │   ├── apiResponse.js
 │   │   │   │   │   ├── asyncHandler.js
@@ -152,10 +165,50 @@ Generated on: 2026-10-24
 │   │   │   │   │   ├── ideation.schema.js
 │   │   │   │   │   └── index.js
 │   │   │   │   └── index.js
+│   │   │   ├── identity/
+│   │   │   │   ├── controllers/
+│   │   │   │   │   ├── auth.controller.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── middleware/
+│   │   │   │   │   ├── authenticate.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── models/
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── Session.js
+│   │   │   │   │   └── User.js
+│   │   │   │   ├── presenters/
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── session.presenter.js
+│   │   │   │   │   └── user.presenter.js
+│   │   │   │   ├── repositories/
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── session.repository.js
+│   │   │   │   │   └── user.repository.js
+│   │   │   │   ├── routes/
+│   │   │   │   │   ├── auth.routes.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── security/
+│   │   │   │   │   ├── accessToken.service.js
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── password.service.js
+│   │   │   │   │   ├── refreshToken.service.js
+│   │   │   │   │   ├── session.service.js
+│   │   │   │   │   └── tokenHasher.js
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── auth.service.js
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── validators/
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── loginRequestSchema.js
+│   │   │   │   │   ├── logoutRequestSchema.js
+│   │   │   │   │   ├── refreshRequestSchema.js
+│   │   │   │   │   └── registerRequestSchema.js
+│   │   │   │   └── index.js
 │   │   │   └── index.js
 │   │   └── index.js
 │   ├── tests/
 │   │   ├── rest/
+│   │   │   ├── auth.rest
 │   │   │   └── ideation.rest
 │   │   └── unit/
 │   │       └── integration/

@@ -21,37 +21,37 @@ async function create(sessionData) {
 // 	});
 // }
 
-// async function findActiveByUser(userId) {
-// 	return Session.find({
-// 		user: userId,
-// 		isRevoked: false,
-// 	})
-// 		.sort({ lastActivityAt: -1 })
-// 		.lean();
-// }
+async function findActiveByUser(userId) {
+	return Session.find({
+		user: userId,
+		isRevoked: false,
+	})
+		.sort({ lastActivityAt: -1 })
+		.lean();
+}
 
-// async function findActiveByIdAndUser(sessionId, userId) {
-// 	return Session.findOne({
-// 		_id: sessionId,
-// 		user: userId,
-// 		isRevoked: false,
-// 	});
-// }
+async function findActiveByIdAndUser(sessionId, userId) {
+	return Session.findOne({
+		_id: sessionId,
+		user: userId,
+		isRevoked: false,
+	});
+}
 
-// async function findByRefreshTokenHash(hash) {
-// 	return Session.findOne({
-// 		refreshTokenHash: hash,
-// 		isRevoked: false,
-// 	});
-// }
+async function findByRefreshTokenHash(hash) {
+	return Session.findOne({
+		refreshTokenHash: hash,
+		isRevoked: false,
+	});
+}
 
-// async function revoke(session) {
-// 	session.isRevoked = true;
+async function revoke(session) {
+	session.isRevoked = true;
 
-// 	session.revokedAt = new Date();
+	session.revokedAt = new Date();
 
-// 	return session.save();
-// }
+	return session.save();
+}
 
 // async function revokeAll(userId) {
 // 	return Session.updateMany(
@@ -66,21 +66,21 @@ async function create(sessionData) {
 // 	);
 // }
 
-// async function revokeAllExcept(userId, sessionId) {
-// 	return Session.updateMany(
-// 		{
-// 			user: userId,
-// 			isRevoked: false,
-// 			_id: { $ne: sessionId },
-// 		},
-// 		{
-// 			$set: {
-// 				isRevoked: true,
-// 				revokedAt: new Date(),
-// 			},
-// 		},
-// 	);
-// }
+async function revokeAllExcept(userId, sessionId) {
+	return Session.updateMany(
+		{
+			user: userId,
+			isRevoked: false,
+			_id: { $ne: sessionId },
+		},
+		{
+			$set: {
+				isRevoked: true,
+				revokedAt: new Date(),
+			},
+		},
+	);
+}
 
 /**
  * ### Why this is preferable
@@ -120,12 +120,12 @@ export default {
 	// save,
 	// findById,
 	// findByUser,
-	// findActiveByUser,
-	// findActiveByIdAndUser,
-	// findByRefreshTokenHash,
-	// revoke,
+	findActiveByUser,
+	findActiveByIdAndUser,
+	findByRefreshTokenHash,
+	revoke,
 	// revokeAll,
-	// revokeAllExcept,
+	revokeAllExcept,
 
 	touchActiveByIdAndUser,
 };

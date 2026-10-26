@@ -4,8 +4,8 @@ async function create(userData) {
 	return User.create(userData);
 }
 
-async function findById(id) {
-	return User.findById(id);
+async function findById(target) {
+	return User.findById(target);
 }
 
 async function findByEmail(email) {

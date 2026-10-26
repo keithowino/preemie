@@ -1,12 +1,14 @@
 @baseUrl = http://localhost:5000/api/v1
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFkZTYwMmExZmVlZjlhMzY1YzJmZWNhIiwiaWF0IjoxNzkyOTU4NTA2LCJleHAiOjE3OTMwNDQ5MDYsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.jojyf3ePvguIHabnHRemSfhDnP4zXXVh1eWBfAU2F5w
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFkZThjMTJhZjkzZDBmN2Y5OTY4YzFhIiwiaWF0IjoxNzkyOTY5NzQ2LCJleHAiOjE3OTMwNTYxNDYsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.kxW90s1B_gNlYcWl0XpV_DuNC11LzdA0KLCeRgCUnjQ
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJqdGkiOiIxZTA1ZDE1MC00MmI4LTQwNjMtOTI3Ny0wZGZhZWUzMzFkMTQiLCJpYXQiOjE3OTI5NTg1MDYsImV4cCI6MTc5NDE2ODEwNiwiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.mItmuKxQbfPE8HVqcwK8aDIA7VXRWCBqguwSxSV4RP0
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWRkZDdmYjNkYTUzZGJhNTIwZDM4NTgiLCJqdGkiOiI3OWFjMWVkZC0wNTM5LTRjMzYtYTcxZS0wODM0YzVjNWJmZmIiLCJpYXQiOjE3OTI5Njk3NDYsImV4cCI6MTc5NDE3OTM0NiwiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.Q-gkYQSDLEBBgf2Da5-lis7hFEzRaG37jY0nxe6smik
 
 @email = designsolutions1629@gmail.com
 
 @password = keith@1234
+
+@sessionId = 6ade7f86c8f7d27c53065d23
 
 ### Register user
 
@@ -29,4 +31,45 @@ Content-Type: application/json
 {
     "email": "{{email}}",
     "password": "{{password}}"
+}
+
+### Logout ("refreshToken": "{{refreshToken}}")
+
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+
+{
+	"refreshToken": "{{refreshToken}}"
+}
+
+### Authentication — Valid Access Token (First, log in then copy the returned access token.)
+
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{accessToken}}
+
+### sessions
+
+GET {{baseUrl}}/auth/sessions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### revoke/ delete 1 of User A's sessions
+
+DELETE {{baseUrl}}/auth/sessions/{{sessionId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### Revoke other User A's sessions
+
+DELETE {{baseUrl}}/auth/sessions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### Successful Refresh ("refreshToken": "<refresh_token_from_login_response>"), then Reuse the Old Refresh Token
+
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
 }
