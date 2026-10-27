@@ -1,4 +1,5 @@
-import apiClient, { ApiError } from "../../../lib/api/apiClient.js";
+import apiClient from "../../../platform/api/apiClient.js";
+import { ApiError } from "../../../platform/api/apiError.js";
 
 /**
 |--------------------------------------------------
@@ -19,7 +20,9 @@ import apiClient, { ApiError } from "../../../lib/api/apiClient.js";
  * @throws {ApiError} When the request fails or the response is invalid.
  */
 export async function createIdeation(input) {
-	const payload = await apiClient.post("/ideations", input);
+	const response = await apiClient.post("/ideations", input);
+
+	const payload = response.data;
 
 	if (
 		payload?.success !== true ||
@@ -29,7 +32,7 @@ export async function createIdeation(input) {
 		throw new ApiError(
 			"The server response did not contain a valid generation ID.",
 			{
-				status: 200,
+				status: response.status,
 				code: "INVALID_RESPONSE",
 				details: null,
 			},
@@ -47,9 +50,11 @@ export async function createIdeation(input) {
  * @throws {ApiError} When retrieval fails or the response is invalid.
  */
 export async function getIdeation(generationId) {
-	const payload = await apiClient.get(
+	const response = await apiClient.get(
 		`/ideations/${encodeURIComponent(generationId)}`,
 	);
+
+	const payload = response.data;
 
 	if (
 		payload?.success !== true ||
@@ -59,8 +64,9 @@ export async function getIdeation(generationId) {
 		throw new ApiError(
 			"The server response did not contain a valid ideation.",
 			{
-				status: 200,
+				status: response.status,
 				code: "INVALID_RESPONSE",
+				details: null,
 			},
 		);
 	}

@@ -4,6 +4,8 @@ const envSchema = z.object({
 	MODE: z.enum(["development", "production", "test"]).default("development"),
 
 	VITE_API_URL: z.url("VITE_API_URL must be a valid URL."),
+
+	VITE_APP_NAME: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(import.meta.env);
@@ -20,7 +22,8 @@ if (!parsedEnv.success) {
 
 const env = Object.freeze({
 	mode: parsedEnv.data.MODE,
-	apiUrl: parsedEnv.data.VITE_API_URL.replace(/\/+$/, ""),
+	apiBaseUrl: parsedEnv.data.VITE_API_URL.replace(/\/+$/, ""),
+	appName: parsedEnv.data.VITE_API_URL,
 });
 
 export default env;

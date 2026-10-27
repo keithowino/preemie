@@ -17,7 +17,8 @@ export const ideationMaterialSchema = z.object({
 
 	quantity: z.number().positive().optional(),
 
-	unit: z.string().trim().min(1).max(30).optional(),
+	// unit: z.string().trim().min(1).max(30).optional(),
+	unit: z.string().trim().max(30).optional(),
 
 	condition: z.string().trim().max(200).optional(),
 

@@ -10,55 +10,88 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 
+import { IdentityProvider } from "../../platform/index.js";
+
+// -----------------------------------------------------------------------------
+// Query client configuration
+// -----------------------------------------------------------------------------
+
 /**
  * Shared server-state configuration.
  *
- * Keep one QueryClient instance for the lifetime of the application.
+ * Policies:
  *
- * #### The configuration establishes three policies:
+ * - Caching: Query data remains fresh for 30 seconds.
+ * - Retries: Eligible transient query failures are retried once.
+ * - Client errors: HTTP 4xx responses are not automatically retried.
+ * - Mutations: No global mutation retry is configured.
  *
- * - Caching: Query data remains fresh for 30 seconds. This reduces
- * unnecessary requests when navigating between screens.
- * - Retries: Transient failures can be retried once, while HTTP client
- * errors such as 400 and 429 are not automatically retried.
- * - Shared cache: All feature components use the same query client.
+ * Query functions should be reserved for read operations. State-changing
+ * requests must use mutations or explicit service calls with appropriate
+ * idempotency guarantees.
  */
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
-			staleTime: 30 * 1000,
+			staleTime: 30_000,
 
 			/**
-			 * The retry callback accommodates common error shapes, but we
-			 * must ensure the future API client exposes the HTTP status
-			 * through error.status or error.response.status. Otherwise,
-			 * HTTP errors may be treated as transient failures. We will
-			 * verify that contract when implementing the shared API client.
+			 * Retry eligible transient query failures at most once.
+			 *
+			 * TanStack Query passes failureCount = 0 for the first failure.
+			 * Therefore, failureCount < 1 permits one retry.
 			 */
 			retry: (failureCount, error) => {
 				const status = error?.status ?? error?.response?.status;
 
 				/**
-				 * Do not automatically retry client errors, including
-				 * validation failures and rate-limit responses.
+				 * Do not retry HTTP client errors, including:
+				 * - 400 Bad Request
+				 * - 401 Unauthorized
+				 * - 403 Forbidden
+				 * - 404 Not Found
+				 * - 408 Request Timeout
+				 * - 409 Conflict
+				 * - 429 Too Many Requests
+				 *
+				 * Authentication refresh is handled separately by the
+				 * API client's response interceptor.
 				 */
-				if (status >= 400 && status < 500) {
+				if (Number.isInteger(status) && status >= 400 && status < 500) {
 					return false;
 				}
 
 				/**
-				 * Allow at most one retry for other failures.
+				 * Permit at most one retry for eligible failures,
+				 * including network errors and server-side 5xx errors.
 				 */
 				return failureCount < 1;
 			},
 		},
+
+		mutations: {
+			/**
+			 * State-changing operations must not be retried automatically.
+			 *
+			 * In particular, repeating a generation POST after a timeout
+			 * could create another persisted ideation.
+			 */
+			retry: false,
+		},
 	},
 });
 
+/**
+|--------------------------------------------------
+| Application providers
+|--------------------------------------------------
+*/
 export function AppProviders({ children }) {
 	return (
-		<QueryClientProvider client={queryClient}>
-			<HelmetProvider>{children}</HelmetProvider>
-		</QueryClientProvider>
+		<IdentityProvider>
+			<QueryClientProvider client={queryClient}>
+				<HelmetProvider>{children}</HelmetProvider>
+			</QueryClientProvider>
+		</IdentityProvider>
 	);
 }
