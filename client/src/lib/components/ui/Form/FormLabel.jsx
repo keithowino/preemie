@@ -6,7 +6,11 @@ export default function FormLabel({ children, htmlFor, required = false }) {
 		>
 			{children}
 
-			{required && <span className="text-red-500 ml-1">*</span>}
+			{required && (
+				<span title="Important" className="text-red-500 ml-1">
+					*
+				</span>
+			)}
 		</label>
 	);
 }
