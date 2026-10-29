@@ -15,7 +15,7 @@ import {
 	Text,
 	validateIdeationInput,
 } from "../../../lib/index.js";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createIdeation } from "../services/index.js";
 
 const INITIAL_MATERIALS = [
@@ -170,41 +170,14 @@ export default function HomePage() {
 			<MetaDataInsert title={platform.name} />
 
 			<Container>
-				<Section className="relative overflow-hidden rounded-card border border-border bg-sage p-6 sm:p-10 lg:p-12">
-					<div
-						aria-hidden="true"
-						className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full border-[32px] border-white/30 sm:h-72 sm:w-72"
-					/>
-
-					<div className="relative max-w-3xl">
-						<Text className="font-semibold uppercase tracking-[0.2em]">
-							The resourceful design studio
-						</Text>
-
-						<Heading level={1} className="max-w-2xl tracking-tight">
-							{platform.excerpt}
-						</Heading>
-
-						<Text className="mt-5 max-w-2xl text-graphite/80 sm:!text-lg">
-							Tell {platform.name} which materials you have
-							available and what you want to achieve. Explore
-							practical ideas built around reuse, improvement, and
-							invention.
-						</Text>
-
-						<a
-							href="#project-form"
-							className="mt-7 inline-flex items-center justify-center rounded-control bg-graphite px-5 py-3 font-semibold text-white transition hover:bg-graphite/85"
-						>
-							Start creating
-							<span aria-hidden="true" className="ml-2">
-								↓
-							</span>
-						</a>
-					</div>
-				</Section>
-
 				<Section aria-labelledby="examples-heading" className="mt-10">
+					<Link
+						to="/"
+						className="inline-flex font-semibold text-graphite underline underline-offset-4"
+					>
+						← Back
+					</Link>
+
 					<div>
 						<Text className="font-semibold uppercase tracking-[0.16em]">
 							Need a starting point?

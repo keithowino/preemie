@@ -1,6 +1,6 @@
 # Preemie Folder Structure
 
-Generated on: 2026-10-26
+Generated on: 2026-10-27
 
 ```bash
 ├── client/
@@ -18,9 +18,6 @@ Generated on: 2026-10-26
 │   │   │   │   └── RouteConfiguration.jsx
 │   │   │   └── index.js
 │   │   ├── lib/
-│   │   │   ├── api/
-│   │   │   │   ├── apiClient.js
-│   │   │   │   └── index.js
 │   │   │   ├── components/
 │   │   │   │   ├── layouts/
 │   │   │   │   │   ├── featureGrid/
@@ -78,6 +75,35 @@ Generated on: 2026-10-26
 │   │   │   │   │   ├── ideation.api.js
 │   │   │   │   │   └── index.js
 │   │   │   │   └── index.js
+│   │   │   └── index.js
+│   │   ├── platform/
+│   │   │   ├── api/
+│   │   │   │   ├── interceptors/
+│   │   │   │   │   ├── auth.interceptor.js
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   └── response.interceptor.js
+│   │   │   │   ├── apiClient.js
+│   │   │   │   ├── apiError.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── request.service.js
+│   │   │   ├── identity/
+│   │   │   │   ├── identity.service.js
+│   │   │   │   ├── IdentityContext.jsx
+│   │   │   │   ├── IdentityProvider.jsx
+│   │   │   │   ├── index.js
+│   │   │   │   └── useIdentity.js
+│   │   │   ├── routing/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── AuthenticatedRoute.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── hooks/
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   └── useAuthenticatedRoute.js
+│   │   │   │   └── index.js
+│   │   │   ├── session/
+│   │   │   │   ├── index.js
+│   │   │   │   ├── sessionManager.js
+│   │   │   │   └── tokenStorage.js
 │   │   │   └── index.js
 │   │   ├── App.jsx
 │   │   ├── index.css
@@ -209,7 +235,8 @@ Generated on: 2026-10-26
 │   ├── tests/
 │   │   ├── rest/
 │   │   │   ├── auth.rest
-│   │   │   └── ideation.rest
+│   │   │   ├── ideation.rest
+│   │   │   └── system.rest
 │   │   └── unit/
 │   │       └── integration/
 │   ├── .env.development

@@ -12,9 +12,11 @@ import { HelmetProvider } from "react-helmet-async";
 
 import { IdentityProvider } from "../../platform/index.js";
 
-// -----------------------------------------------------------------------------
-// Query client configuration
-// -----------------------------------------------------------------------------
+/**
+|--------------------------------------------------
+| Query client configuration
+|--------------------------------------------------
+*/
 
 /**
  * Shared server-state configuration.

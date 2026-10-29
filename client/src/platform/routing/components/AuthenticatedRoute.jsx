@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuthenticatedRoute } from "../hooks/index.js";
+import { useIdentity } from "../../identity/index.js";
 
 export default function AuthenticatedRoute() {
-	const { isAuthenticated, isLoading } = useAuthenticatedRoute();
+	const { isAuthenticated, isLoading } = useIdentity();
 
 	const location = useLocation();
 

@@ -2,7 +2,7 @@ import { HomePage, IdeasPage } from "../pages/index.js";
 
 const ideationRoutes = [
 	{
-		path: "/",
+		path: "/create",
 		element: <HomePage />,
 	},
 	{

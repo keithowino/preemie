@@ -6,6 +6,9 @@ import identityService from "./identity.service.js";
 
 import { sessionManager } from "../session/index.js";
 
+import apiClient from "../api/apiClient.js";
+import { refreshSession } from "../api/sessionRefresh.js";
+
 /**
  * #### Why we are not implementing refresh yet
  * You have a refresh endpoint on the backend, but I recommend not implementing automatic token refresh in the IdentityProvider.
@@ -21,16 +24,23 @@ export function IdentityProvider({ children }) {
 	const isAuthenticated = user !== null;
 
 	const restoreSession = useCallback(async () => {
-		if (!sessionManager.hasAccessToken()) {
-			setUser(null);
-			setIsLoading(false);
-			return;
-		}
+		setIsLoading(true);
 
 		try {
-			const user = await identityService.me();
-			setUser(user);
-		} catch (error) {
+			if (!sessionManager.hasAccessToken()) {
+				if (!sessionManager.hasRefreshToken()) {
+					setUser(null);
+					return;
+				}
+
+				// Restore the access token using the existing refresh mechanism.
+				await refreshSession(apiClient);
+			}
+
+			const currentUser = await identityService.me();
+
+			setUser(currentUser);
+		} catch {
 			sessionManager.clearSession();
 			setUser(null);
 		} finally {
@@ -50,35 +60,72 @@ export function IdentityProvider({ children }) {
 		});
 	}, []);
 
-	async function login(credentials) {
-		const result = await identityService.login(credentials);
+	/**
+	|--------------------------------------------------
+	| Authentication
+	|--------------------------------------------------
+	*/
 
-		sessionManager.saveSession({
-			accessToken: result.accessToken,
-			refreshToken: result.refreshToken,
-		});
+	/**
+	 * Establishes an authenticated session and retrieves its user profile.
+	 *
+	 * If any step fails after authentication begins, the local session is
+	 * cleared to prevent tokens from remaining without a confirmed user.
+	 *
+	 * @param {object} result - Authentication response data.
+	 * @returns {Promise<object>} The authenticated user's profile.
+	 */
+	const completeAuthentication = useCallback(async (result) => {
+		try {
+			sessionManager.saveSession({
+				accessToken: result.accessToken,
+				refreshToken: result.refreshToken,
+			});
 
-		const user = await identityService.me();
+			const authenticatedUser = await identityService.me();
 
-		setUser(user);
+			setUser(authenticatedUser);
 
-		return user;
-	}
+			return authenticatedUser;
+		} catch (error) {
+			sessionManager.clearSession();
+			setUser(null);
 
-	async function register(command) {
-		const result = await identityService.register(command);
+			throw error;
+		} finally {
+			setIsLoading(false);
+		}
+	}, []);
 
-		sessionManager.saveSession({
-			accessToken: result.accessToken,
-			refreshToken: result.refreshToken,
-		});
+	/**
+	 * Authenticates an existing user.
+	 *
+	 * @param {object} credentials - Login credentials.
+	 * @returns {Promise<object>} The authenticated user's profile.
+	 */
+	const login = useCallback(
+		async (credentials) => {
+			const result = await identityService.login(credentials);
 
-		const user = await identityService.me();
+			return completeAuthentication(result);
+		},
+		[completeAuthentication],
+	);
 
-		setUser(user);
+	/**
+	 * Registers a new user and establishes an authenticated session.
+	 *
+	 * @param {object} command - Registration details.
+	 * @returns {Promise<object>} The registered user's profile.
+	 */
+	const register = useCallback(
+		async (command) => {
+			const result = await identityService.register(command);
 
-		return user;
-	}
+			return completeAuthentication(result);
+		},
+		[completeAuthentication],
+	);
 
 	const logout = useCallback(async () => {
 		try {

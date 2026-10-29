@@ -9,5 +9,5 @@ export function useIdentity() {
 		throw new Error("useIdentity must be used within IdentityProvider.");
 	}
 
-	return context;
+	return ctx;
 }

@@ -1,51 +1,5 @@
 import { sessionManager } from "../../session/index.js";
-
-let refreshPromise = null;
-
-async function refreshSession(apiClient) {
-	if (refreshPromise) {
-		return refreshPromise;
-	}
-
-	const refreshToken = sessionManager.getRefreshToken();
-
-	if (!refreshToken) {
-		throw new Error("No refresh token is available.");
-	}
-
-	refreshPromise = apiClient
-		.post(
-			"/auth/refresh",
-			{
-				refreshToken,
-			},
-			{
-				_skipAuthHeader: true,
-				_skipAuthRefresh: true,
-			},
-		)
-		.then((response) => {
-			const session = response?.data?.data;
-
-			if (!session?.accessToken || !session?.refreshToken) {
-				throw new Error(
-					"Refresh response did not contain a complete session.",
-				);
-			}
-
-			sessionManager.saveSession({
-				accessToken: session.accessToken,
-				refreshToken: session.refreshToken,
-			});
-
-			return session.accessToken;
-		})
-		.finally(() => {
-			refreshPromise = null;
-		});
-
-	return refreshPromise;
-}
+import { refreshSession } from "../sessionRefresh.js";
 
 export default function registerResponseInterceptor(apiClient) {
 	apiClient.interceptors.response.use(
@@ -59,12 +13,10 @@ export default function registerResponseInterceptor(apiClient) {
 			if (
 				!isUnauthorized ||
 				!originalRequest ||
-				!originalRequest._authenticatedRequest
+				!originalRequest._authenticatedRequest ||
+				originalRequest._skipAuthRefresh ||
+				originalRequest._retry
 			) {
-				return Promise.reject(error);
-			}
-
-			if (originalRequest._retry || originalRequest._skipAuthRefresh) {
 				return Promise.reject(error);
 			}
 
@@ -74,6 +26,7 @@ export default function registerResponseInterceptor(apiClient) {
 				return Promise.reject(error);
 			}
 
+			// Prevent the original request from entering a retry loop.
 			originalRequest._retry = true;
 
 			try {
@@ -84,9 +37,10 @@ export default function registerResponseInterceptor(apiClient) {
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
 				return apiClient(originalRequest);
-			} catch (refreshError) {
+			} catch {
 				sessionManager.clearSession();
 
+				// Preserve the original request's HTTP error for its caller.
 				return Promise.reject(error);
 			}
 		},

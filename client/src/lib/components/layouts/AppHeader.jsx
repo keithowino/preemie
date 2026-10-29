@@ -1,12 +1,16 @@
 import { useLayoutEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { platform } from "../../config/index.js";
 
 import { gsap } from "gsap";
+import { useIdentity } from "../../../platform/index.js";
 
 const TAGLINE = ["Make.", "Test.", "Improve."];
 
 export default function AppHeader() {
+	const { isAuthenticated, user, logout } = useIdentity();
+	const navigate = useNavigate();
+
 	const taglineRef = useRef(null);
 
 	useLayoutEffect(() => {
@@ -39,6 +43,11 @@ export default function AppHeader() {
 
 		return () => mm.revert();
 	}, []);
+
+	async function handleSignOut() {
+		await logout();
+		navigate("/", { replace: true });
+	}
 
 	return (
 		<header className="border-b border-border bg-canvas">
@@ -102,6 +111,42 @@ export default function AppHeader() {
 						);
 					})}
 				</span>
+				<div className="flex items-center gap-4">
+					{isAuthenticated ? (
+						<nav className="flex items-center gap-3 text-sm">
+							<Link
+								to="/sessions"
+								className="font-medium text-graphite hover:underline"
+							>
+								{user.firstName
+									? `Hi, ${user.firstName}`
+									: "Sessions"}
+							</Link>
+							<button
+								type="button"
+								onClick={handleSignOut}
+								className="font-medium text-muted hover:text-graphite"
+							>
+								Sign out
+							</button>
+						</nav>
+					) : (
+						<nav className="flex items-center gap-3 text-sm">
+							<Link
+								to="/login"
+								className="font-medium text-graphite hover:underline"
+							>
+								Sign in
+							</Link>
+							<Link
+								to="/register"
+								className="rounded-control bg-graphite px-3 py-1.5 font-semibold text-white hover:bg-graphite/85"
+							>
+								Create account
+							</Link>
+						</nav>
+					)}
+				</div>
 			</div>
 		</header>
 	);

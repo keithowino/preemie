@@ -1,5 +1,11 @@
 import { Navigate, useRoutes } from "react-router-dom";
-import { ideationRoutes } from "../../modules/index.js";
+import {
+	authenticatedIdentityRoutes,
+	gatewayRoutes,
+	ideationRoutes,
+	publicIdentityRoutes,
+} from "../../modules/index.js";
+import { AuthenticatedRoute, PublicOnlyRoute } from "../../platform/index.js";
 
 /**
  * React Query will manage asynchronous query states,
@@ -14,7 +20,16 @@ import { ideationRoutes } from "../../modules/index.js";
 
 function ApplicationRoutes() {
 	return useRoutes([
-		...ideationRoutes,
+		...gatewayRoutes,
+		{
+			element: <PublicOnlyRoute />,
+			children: publicIdentityRoutes,
+		},
+
+		{
+			element: <AuthenticatedRoute />,
+			children: [...ideationRoutes, ...authenticatedIdentityRoutes],
+		},
 		{
 			path: "*",
 			element: <Navigate to="/" replace />,
