@@ -146,3 +146,36 @@ We should distinguish between navigation errors, data-fetching errors and form-s
 React Query will manage asynchronous query states, but it does not replace route-level error handling.
 
 When we implement the routes, React Router's errorElement or equivalent route error-boundary mechanism can handle unexpected route errors. Expected API failures should remain within the relevant page so that users can retry without losing their context.
+
+---
+
+I recommend these frontend behaviors:
+
+Revoke another device Send DELETE request, then refresh the session list.
+Revoke current device Clear local credentials and navigate to login after successful revocation.
+Revoke other sessions Keep the current session authenticated and refresh the list.
+Session list request fails Display an error and allow retry; do not silently show an empty list.
+No active sessions returned Display an appropriate empty state.
+
+For the current device, I recommend showing a This device indicator and providing an explicit sign-out action rather than an ordinary revoke button. This makes the consequences clearer.
+
+Other presentation decisions:
+
+- Display missing device information as Unknown device, rather than leaving blank headings.
+- Format dates using the browser's local timezone.
+- Display IP addresses only when supplied.
+- Require confirmation before revoking other sessions.
+- Refresh the session list after successful mutations.
+
+## Implementation plan
+
+We can now follow this sequence:
+
+1. Extend identity.service.js with the three session-management methods and response validation.
+2. Add session-management state and operations to the appropriate frontend identity layer.
+3. Build the session-management page and individual session components.
+4. Integrate the page into protected routing and navigation.
+5. Test the API integration and user interactions.
+6. Update the documentation.
+
+---

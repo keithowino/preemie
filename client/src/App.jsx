@@ -1,9 +1,7 @@
-import { AppProviders, AppRouter } from "./app/index.js";
+import React from "react";
 
-export default function App() {
-	return (
-		<AppProviders>
-			<AppRouter />
-		</AppProviders>
-	);
-}
+const App = () => {
+	return <p>App</p>;
+};
+
+export default App;

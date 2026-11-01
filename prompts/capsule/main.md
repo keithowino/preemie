@@ -70,3 +70,40 @@ Deferred
 - PDF export, community, and public gallery
 
 ---
+
+> While working on session mng.
+
+## What we should verify
+
+The session lifecycle should satisfy these requirements:
+
+1. Initial application load
+    - Show a loading state while restoring the session.
+    - If valid session credentials exist, retrieve the current user.
+    - If the access token has expired, attempt a refresh and retry the request.
+    - If the refresh token is invalid or revoked, clear local credentials and treat the user as unauthenticated.
+2. Successful login or registration
+    - Save both tokens.
+    - Retrieve the authenticated user's profile.
+    - Update the identity context.
+    - Navigate to the requested destination.
+3. Access-token expiration
+    - Refresh the session through the shared API infrastructure.
+    - Store the rotated tokens.
+    - Retry the original request only once.
+    - Clear the session if refresh fails.
+4. Logout
+    - Revoke the current server-side session when possible.
+    - Always clear local credentials, even if the server is unavailable.
+    - Update the identity context so protected pages are no longer accessible.
+5. Concurrent requests
+    - Ensure multiple requests encountering an expired access token share a single refresh operation.
+    - Prevent failed requests from entering an infinite retry loop.
+
+---
+
+## Token storage
+
+tokenStorage.js stores both tokens in localStorage. This matches the current implementation, although it means JavaScript running on the page can access the refresh token as well as the access token. We might have to migration to an HTTP-only refresh-token cookie.
+
+---
