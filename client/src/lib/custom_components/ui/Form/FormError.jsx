@@ -1,5 +1,5 @@
-import Button from "../button/Button.jsx";
-import { Text } from "../typography/index.js";
+import { Button } from "@/components/ui/button.jsx";
+import { Text } from "@/components/ui/typography/Text.jsx";
 import { IoClose } from "react-icons/io5";
 
 export default function FormError({ children, clearError }) {

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 
 import {
-	Button,
-	Container,
 	EmptyState,
 	Heading,
 	Loader,
 	MetaDataInsert,
 	Section,
-	Text,
 } from "../../../lib/index.js";
+import { Text } from "@/components/ui/typography/Text.jsx";
+import { Container } from "@/components/ui/Layouts/container/index.js";
 
 import { useIdentity, useNotify } from "../../../platform/index.js";
+import { Button } from "@/components/ui/button.jsx";
 
 /**
 |--------------------------------------------------
@@ -362,7 +362,6 @@ export default function SessionsPage() {
 
 															<Button
 																type="button"
-																variant="primary"
 																disabled={Boolean(
 																	mutationInProgress,
 																)}
@@ -444,7 +443,6 @@ export default function SessionsPage() {
 
 										<Button
 											type="button"
-											variant="primary"
 											disabled={Boolean(
 												mutationInProgress,
 											)}

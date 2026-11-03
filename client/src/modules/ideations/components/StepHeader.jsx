@@ -1,4 +1,5 @@
-import { Heading, Text } from "../../../lib/index.js";
+import { Heading } from "../../../lib/index.js";
+import { Text } from "@/components/ui/typography/Text.jsx";
 
 const StepHeader = ({ load }) => {
 	return (

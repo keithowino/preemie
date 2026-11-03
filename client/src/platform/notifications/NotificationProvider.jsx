@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import NotificationContext from "./NotificationContext.jsx";
 
-import { ToastViewport } from "../../lib/index.js";
+import { ToastViewport } from "@/components/toast/index.js";
 
 /**
  * Default lifetime, in milliseconds, for each notification kind.

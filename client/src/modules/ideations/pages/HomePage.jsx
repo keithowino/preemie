@@ -1,31 +1,32 @@
 import { useState } from "react";
+import { useForm } from "@tanstack/react-form";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
 	IdeationConstraintsForm,
 	MaterialEditor,
 } from "../components/index.js";
 import { IDEATION_EXAMPLES } from "../constants/index.js";
 import {
-	Button,
-	Container,
 	FeatureGrid,
 	Heading,
 	MetaDataInsert,
 	platform,
 	Section,
-	Text,
-	validateIdeationInput,
-} from "../../../lib/index.js";
-import { Link, useNavigate } from "react-router-dom";
-import { createIdeation } from "../services/index.js";
+} from "@/lib/index.js";
+import { Container } from "@/components/ui/Layouts/container/index.js";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/typography/Text.jsx";
 
-const INITIAL_MATERIALS = [
-	{
-		name: "",
-		quantity: "",
-		unit: "",
-		condition: "",
-	},
-];
+import { createIdeation } from "../services/index.js";
+import { formSchema } from "../validators/ideationFormSchema.js";
+
+const EMPTY_MATERIAL = {
+	name: "",
+	quantity: "",
+	unit: "",
+	condition: "",
+};
 
 const INITIAL_CONSTRAINTS = {
 	goal: "",
@@ -34,135 +35,120 @@ const INITIAL_CONSTRAINTS = {
 	notes: "",
 };
 
-const INITIAL_ERRORS = {
-	materials: [],
-	constraints: {},
+const INITIAL_VALUES = {
+	materials: [{ ...EMPTY_MATERIAL }],
+	constraints: { ...INITIAL_CONSTRAINTS },
 };
 
 export default function HomePage() {
-	const [materials, setMaterials] = useState(INITIAL_MATERIALS);
-	const [constraints, setConstraints] = useState(INITIAL_CONSTRAINTS);
-	const [errors, setErrors] = useState(INITIAL_ERRORS);
-	const [selectedExampleId, setSelectedExampleId] = useState(null);
-	const [feedback, setFeedback] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
-
 	const navigate = useNavigate();
+	const [selectedExampleId, setSelectedExampleId] = useState(null);
 
-	function handleMaterialsChange(nextMaterials) {
-		setMaterials(nextMaterials);
-		setSelectedExampleId(null);
-		setErrors(INITIAL_ERRORS);
-		setFeedback(null);
-	}
+	/**
+	 * Only used for the "request failed" banner. Field errors live
+	 * inside the form state via TanStack Form; this is for
+	 * server/network errors.
+	 */
+	const [submitError, setSubmitError] = useState(null);
 
-	function handleConstraintsChange(nextConstraints) {
-		setConstraints(nextConstraints);
-		setSelectedExampleId(null);
-		setErrors(INITIAL_ERRORS);
-		setFeedback(null);
-	}
+	const form = useForm({
+		defaultValues: INITIAL_VALUES,
+
+		validators: {
+			/**
+			 * Validate on submit AND on change after the first submit attempt.
+			 * That gives "empty form shows errors immediately" semantics
+			 * without spamming errors while the user is typing the first time.
+			 */
+			onSubmit: formSchema,
+			onChange: formSchema,
+		},
+
+		onSubmit: async ({ value }) => {
+			setSubmitError(null);
+
+			const input = {
+				materials: value.materials.map((material) => ({
+					name: material.name.trim(),
+					/**
+					 * Coerce only when a value was provided. The API treats
+					 * missing quantity as "not specified".
+					 */
+					...(material.quantity !== ""
+						? { quantity: Number(material.quantity) }
+						: {}),
+					...(material.unit.trim()
+						? { unit: material.unit.trim() }
+						: {}),
+					...(material.condition.trim()
+						? { condition: material.condition.trim() }
+						: {}),
+				})),
+				constraints: Object.fromEntries(
+					Object.entries(value.constraints).filter(
+						([, v]) => typeof v === "string" && v.trim().length > 0,
+					),
+				),
+			};
+
+			try {
+				const ideation = await createIdeation(input);
+
+				navigate(`/ideas/${encodeURIComponent(ideation.generationId)}`);
+			} catch (error) {
+				let message =
+					"We couldn't generate your ideas. Your entries are still here; please try again.";
+
+				if (error?.code === "REQUEST_TIMEOUT") {
+					message =
+						"The request timed out. Your entries are still here. Please try again.";
+				} else if (error?.code === "NETWORK_ERROR") {
+					message =
+						"We couldn't connect to the server. Check your connection and try again.";
+				} else if (error?.status === 400) {
+					message =
+						error.message ||
+						"Some submitted details were rejected. Review your entries and try again.";
+				} else if (error?.status === 429) {
+					message =
+						error.message ||
+						"Too many requests have been made. Please wait a little before trying again.";
+				} else if (error?.status >= 500) {
+					message =
+						"The generation service is temporarily unavailable. Your entries are still here; please try again.";
+				} else if (error?.code === "INVALID_RESPONSE") {
+					message =
+						"The server returned an unexpected response. Please try again.";
+				}
+
+				setSubmitError(message);
+			}
+		},
+	});
 
 	function applyExample(example) {
-		setMaterials(example.materials.map((material) => ({ ...material })));
-		setConstraints({
-			...INITIAL_CONSTRAINTS,
-			...example.constraints,
-		});
+		form.reset(
+			{
+				materials: example.materials.map((material) => ({
+					name: material.name ?? "",
+					quantity:
+						material.quantity === undefined ||
+						material.quantity === null
+							? ""
+							: String(material.quantity),
+					unit: material.unit ?? "",
+					condition: material.condition ?? "",
+				})),
+				constraints: {
+					...INITIAL_CONSTRAINTS,
+					...example.constraints,
+				},
+			},
+			{ keepDefaultValues: true },
+		);
+
 		setSelectedExampleId(example.id);
-		setErrors(INITIAL_ERRORS);
-		setFeedback(null);
-	}
-
-	async function handleSubmit(event) {
-		event.preventDefault();
-
-		if (isSubmitting) {
-			return;
-		}
-
-		const validation = validateIdeationInput({
-			materials,
-			constraints,
-		});
-
-		setErrors(validation.errors);
-
-		if (!validation.isValid) {
-			setFeedback({
-				type: "error",
-				message: "Review the highlighted fields before continuing.",
-			});
-
-			return;
-		}
-
-		/**
-		 * Convert UI values into the shape expected by the backend schema.
-		 */
-		const input = {
-			materials: materials.map((material) => ({
-				name: material.name.trim(),
-				quantity: Number(material.quantity),
-				unit: material.unit.trim(),
-				condition: material.condition.trim(),
-				...(material.specifications?.trim()
-					? { specifications: material.specifications.trim() }
-					: {}),
-			})),
-
-			/**
-			 * Empty optional strings should not be sent as values.
-			 */
-			constraints: Object.fromEntries(
-				Object.entries(constraints).filter(
-					([, value]) =>
-						typeof value === "string" && value.trim().length > 0,
-				),
-			),
-		};
-
-		setIsSubmitting(true);
-		setFeedback(null);
-
-		try {
-			const ideation = await createIdeation(input);
-
-			// createIdeation validates the response before returning.
-			navigate(`/ideas/${encodeURIComponent(ideation.generationId)}`);
-		} catch (error) {
-			let message =
-				"We couldn't generate your ideas. Your entries are still here; please try again.";
-
-			if (error?.code === "REQUEST_TIMEOUT") {
-				message =
-					"The request timed out. Your entries are still here. Please try again.";
-			} else if (error?.code === "NETWORK_ERROR") {
-				message =
-					"We couldn't connect to the server. Check your connection and try again.";
-			} else if (error?.status === 400) {
-				message =
-					error.message ||
-					"Some submitted details were rejected. Review your entries and try again.";
-			} else if (error?.status === 429) {
-				message =
-					error.message ||
-					"Too many requests have been made. Please wait a little before trying again.";
-			} else if (error?.status >= 500) {
-				message =
-					"The generation service is temporarily unavailable. Your entries are still here; please try again.";
-			} else if (error?.code === "INVALID_RESPONSE") {
-				message =
-					"The server returned an unexpected response. Please try again.";
-			}
-
-			setFeedback({
-				type: "error",
-				message,
-			});
-		} finally {
-			setIsSubmitting(false);
-		}
+		setSubmitError(null);
 	}
 
 	return (
@@ -173,7 +159,7 @@ export default function HomePage() {
 				<Section aria-labelledby="examples-heading" className="mt-10">
 					<Link
 						to="/"
-						className="inline-flex font-semibold text-graphite underline underline-offset-4"
+						className="inline-flex font-semibold text-foreground underline underline-offset-4"
 					>
 						← Back
 					</Link>
@@ -182,11 +168,9 @@ export default function HomePage() {
 						<Text className="font-semibold uppercase tracking-[0.16em]">
 							Need a starting point?
 						</Text>
-
 						<Heading level={2} id="examples-heading">
 							Try an example
 						</Heading>
-
 						<Text className="mt-2">
 							Choose a starting point to populate the form. You
 							can change any of its details afterward.
@@ -196,29 +180,27 @@ export default function HomePage() {
 					<FeatureGrid>
 						{IDEATION_EXAMPLES.map((example, index) => {
 							const isSelected = selectedExampleId === example.id;
-
 							return (
 								<button
 									key={example.id}
 									type="button"
 									onClick={() => applyExample(example)}
 									aria-pressed={isSelected}
-									className={`rounded-card border p-5 text-left transition ${
+									className={`rounded-xl border bg-card p-6 text-left text-card-foreground transition ${
 										isSelected
-											? "border-signal bg-white ring-2 ring-signal/20"
-											: "border-border bg-white hover:border-graphite/40 hover:shadow-sm"
+											? "border-primary ring-2 ring-primary/20"
+											: "border-border hover:border-secondary-foreground/40 hover:shadow-sm"
 									}`}
 								>
 									<span className="flex items-center justify-between gap-3">
-										<span className="text-sm font-semibold uppercase tracking-wider text-muted">
+										<span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
 											{String(index + 1).padStart(2, "0")}
 										</span>
-
 										<span
 											className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
 												isSelected
-													? "bg-signal text-white"
-													: "bg-canvas text-muted"
+													? "bg-primary text-primary-foreground"
+													: "bg-muted text-muted-foreground"
 											}`}
 										>
 											{isSelected
@@ -230,12 +212,10 @@ export default function HomePage() {
 									<span className="mt-4 block text-lg font-bold">
 										{example.label}
 									</span>
-
-									<span className="mt-2 block text-sm leading-6 text-muted">
+									<span className="mt-2 block text-sm leading-6 text-muted-foreground">
 										{example.description}
 									</span>
-
-									<span className="mt-4 block text-xs font-medium text-graphite">
+									<span className="mt-4 block text-xs font-medium">
 										{example.materials.length} example
 										materials
 									</span>
@@ -247,63 +227,66 @@ export default function HomePage() {
 
 				<form
 					id="project-form"
-					onSubmit={handleSubmit}
 					noValidate
+					onSubmit={(event) => {
+						event.preventDefault();
+						event.stopPropagation();
+						form.handleSubmit();
+					}}
 					className="mt-12 space-y-10"
 				>
-					<MaterialEditor
-						materials={materials}
-						onChange={handleMaterialsChange}
-						errors={errors}
-					/>
+					<MaterialEditor form={form} />
 
 					<div className="border-t border-border" />
 
-					<IdeationConstraintsForm
-						constraints={constraints}
-						onChange={handleConstraintsChange}
-						errors={errors.constraints}
-					/>
+					<IdeationConstraintsForm form={form} />
 
 					<div className="border-t border-border pt-6">
-						{feedback && (
+						{submitError && (
 							<Text
-								className={`mb-5 rounded-control border px-4 py-3 ${
-									feedback.type === "error"
-										? "border-red-200 bg-red-50 text-red-800"
-										: "border-green-200 bg-green-50 text-green-900"
-								}`}
-								role="status"
+								className="mb-5 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive"
+								role="alert"
 								aria-live="polite"
 							>
-								{feedback.message}
+								{submitError}
 							</Text>
 						)}
 
-						<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-							<Text className="max-w-xl">
-								{platform.name} will use your materials and
-								preferences to explore three different
-								approaches to making something useful.
-							</Text>
+						<form.Subscribe
+							selector={(state) => ({
+								isSubmitting: state.isSubmitting,
+								canSubmit: state.canSubmit,
+							})}
+						>
+							{({ isSubmitting, canSubmit }) => (
+								<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+									<Text className="max-w-xl">
+										{platform.name} will use your materials
+										and preferences to explore three
+										different approaches to making something
+										useful.
+									</Text>
 
-							<Button
-								type="submit"
-								disabled={isSubmitting}
-								className="rounded-control"
-								variant="secondary"
-							>
-								{isSubmitting
-									? "Generating ideas..."
-									: "Generate ideas"}
-
-								{!isSubmitting && (
-									<span aria-hidden="true" className="ml-2">
-										→
-									</span>
-								)}
-							</Button>
-						</div>
+									<Button
+										type="submit"
+										disabled={isSubmitting || !canSubmit}
+										size="lg"
+									>
+										{isSubmitting
+											? "Generating ideas..."
+											: "Generate ideas"}
+										{!isSubmitting && (
+											<span
+												aria-hidden="true"
+												className="ml-2"
+											>
+												→
+											</span>
+										)}
+									</Button>
+								</div>
+							)}
+						</form.Subscribe>
 					</div>
 				</form>
 			</Container>

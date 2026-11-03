@@ -3,14 +3,14 @@ import { Link, useParams } from "react-router-dom";
 
 import { getIdeation } from "../services/index.js";
 import {
-	Container,
 	Heading,
 	Loader,
 	MetaDataInsert,
 	Section,
-	Text,
 	platform,
 } from "../../../lib/index.js";
+import { Text } from "@/components/ui/typography/Text.jsx";
+import { Container } from "@/components/ui/Layouts/container/index.js";
 
 const UUID_PATTERN =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

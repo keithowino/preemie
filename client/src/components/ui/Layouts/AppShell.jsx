@@ -3,7 +3,7 @@ import AppHeader from "./AppHeader.jsx";
 
 export default function AppShell({ children }) {
 	return (
-		<div className="flex min-h-screen flex-col bg-canvas text-graphite">
+		<div className="flex min-h-screen flex-col bg-background text-foreground">
 			<AppHeader />
 
 			<main

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-	Button,
 	FeatureGrid,
 	Form,
 	FormActions,
@@ -12,6 +11,7 @@ import {
 import { useIdentity } from "../../../platform/index.js";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getDestination, getErrorMessage } from "../utils.js";
+import { Button } from "@/components/ui/button.jsx";
 
 const RegisterPage = () => {
 	const { isAuthenticated, register } = useIdentity();
@@ -166,9 +166,10 @@ const RegisterPage = () => {
 				<Button
 					type="submit"
 					disabled={isSubmitting}
-					variant="secondary"
-					className="rounded-control"
-					fullWidthMobile
+					// variant="secondary"
+					variant="default"
+					className="rounded-md"
+					// fullWidthMobile
 				>
 					{isSubmitting ? "Please wait..." : "Create account"}
 				</Button>

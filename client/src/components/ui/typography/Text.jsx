@@ -1,4 +1,4 @@
-export default function Text({
+export function Text({
 	children,
 	className = "",
 	size = "text-sm sm:text-base",
@@ -6,9 +6,11 @@ export default function Text({
 }) {
 	return (
 		<p
-			className={[size, "text-muted leading-relaxed", className].join(
-				" ",
-			)}
+			className={[
+				size,
+				"text-muted-foreground leading-relaxed",
+				className,
+			].join(" ")}
 			{...props}
 		>
 			{children}

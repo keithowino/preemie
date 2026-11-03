@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useIdentity } from "../../../platform/index.js";
 
 import {
-	Button,
 	FeatureGrid,
 	Form,
 	FormActions,
@@ -14,6 +13,7 @@ import {
 	FormLabel,
 } from "../../../lib/index.js";
 import { getDestination, getErrorMessage } from "../utils.js";
+import { Button } from "@/components/ui/button.jsx";
 
 export default function LoginPage() {
 	const { login } = useIdentity();
@@ -90,9 +90,10 @@ export default function LoginPage() {
 				<Button
 					type="submit"
 					disabled={isSubmitting}
-					variant="secondary"
-					className="rounded-control"
-					fullWidthMobile
+					// variant="secondary"
+					variant="default"
+					className="rounded-md"
+					// fullWidthMobile
 				>
 					{isSubmitting ? "Please wait..." : "Log in"}
 				</Button>

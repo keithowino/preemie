@@ -1,5 +1,7 @@
+import { Button } from "@/components/ui/button.jsx";
 import { FeatureGrid } from "./layouts/index.js";
-import { Button, Heading, Section, Text } from "./ui/index.js";
+import { Heading, Section } from "./ui/index.js";
+import { Text } from "@/components/ui/typography/Text.jsx";
 
 /**
  * Attributes: actions={[{ label: "", action: loadSessions, variant: "" }]}

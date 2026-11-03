@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { platform } from "../../config/index.js";
+import { platform } from "../../../lib/index.js";
 
 import { gsap } from "gsap";
 import { useIdentity } from "../../../platform/index.js";
@@ -56,16 +56,16 @@ export default function AppHeader() {
 	}
 
 	return (
-		<header className="border-b border-border bg-canvas">
+		<header className="border-b border-border bg-background">
 			<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
 				<Link
 					to="/"
 					aria-label="Preemie home"
-					className="inline-flex items-center gap-3 rounded-control"
+					className="inline-flex items-center gap-3 rounded-md"
 				>
 					<span
 						aria-hidden="true"
-						className="flex h-10 w-10 items-center justify-center rounded-xl bg-sage text-graphite"
+						className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-foreground"
 					>
 						<svg
 							viewBox="0 0 24 24"
@@ -83,10 +83,10 @@ export default function AppHeader() {
 					</span>
 
 					<span className="flex flex-col">
-						<span className="font-display text-xl font-extrabold leading-tight tracking-tight text-graphite">
+						<span className="font-heading text-xl font-extrabold leading-tight tracking-tight text-foreground">
 							{platform.name}
 						</span>
-						<span className="text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-muted">
+						<span className="text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
 							Ideas from what you have
 						</span>
 					</span>
@@ -94,7 +94,7 @@ export default function AppHeader() {
 
 				<span
 					ref={taglineRef}
-					className="hidden items-center gap-1.5 text-sm font-medium text-muted sm:flex"
+					className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground sm:flex"
 				>
 					{TAGLINE.map((word, i) => {
 						const isLast = i === TAGLINE.length - 1;
@@ -110,7 +110,7 @@ export default function AppHeader() {
 									<span
 										data-underline
 										aria-hidden="true"
-										className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-sage"
+										className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-secondary"
 									/>
 								)}
 							</span>
@@ -122,7 +122,7 @@ export default function AppHeader() {
 						<nav className="flex items-center gap-3 text-sm">
 							<Link
 								to="/account/settings/security"
-								className="font-medium text-graphite hover:underline"
+								className="font-medium text-foreground hover:underline"
 							>
 								{user.firstName
 									? `Hi, ${user.firstName}`
@@ -131,7 +131,7 @@ export default function AppHeader() {
 							<button
 								type="button"
 								onClick={handleSignOut}
-								className="font-medium text-muted hover:text-graphite"
+								className="font-medium text-muted-foreground hover:text-foreground"
 							>
 								Sign out
 							</button>
@@ -140,13 +140,13 @@ export default function AppHeader() {
 						<nav className="flex items-center gap-3 text-sm">
 							<Link
 								to="/login"
-								className="font-medium text-graphite hover:underline"
+								className="font-medium text-foreground hover:underline"
 							>
 								Sign in
 							</Link>
 							<Link
 								to="/register"
-								className="rounded-control bg-graphite px-3 py-1.5 font-semibold text-white hover:bg-graphite/85"
+								className="rounded-md bg-primary px-3 py-1.5 font-semibold text-primary-foreground hover:bg-primary/85"
 							>
 								Create account
 							</Link>

@@ -1,13 +1,13 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import {
-	Container,
 	Heading,
 	Loader,
 	MetaDataInsert,
 	platform,
 	Section,
-	Text,
 } from "../../../lib/index.js";
+import { Text } from "@/components/ui/typography/Text.jsx";
+import { Container } from "@/components/ui/Layouts/container/index.js";
 import { useIdentity } from "../../../platform/index.js";
 
 const AuthLayout = () => {

@@ -1,33 +1,25 @@
-import { FeatureGrid, Section, Text } from "../../../lib/index.js";
+import { FeatureGrid, Section } from "@/lib/index.js";
 import { SKILL_LEVEL_OPTIONS } from "../constants/index.js";
 import StepHeader from "./StepHeader.jsx";
+import { Card, CardContent } from "@/components/ui/card.jsx";
+import {
+	Field,
+	FieldError,
+	FieldLabel,
+	FieldSet,
+} from "@/components/ui/field.jsx";
+import { Input } from "@/components/ui/input.jsx";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea.jsx";
 
-const inputClassName =
-	"mt-1 w-full rounded-control border border-border bg-white px-3 py-2.5 " +
-	"text-graphite placeholder:text-muted/70 focus:border-signal focus:outline-none";
-
-function FieldError({ id, message }) {
-	if (!message) return null;
-
-	return (
-		<Text id={id} className="mt-1 text-red-700" role="alert">
-			{message}
-		</Text>
-	);
-}
-
-export default function IdeationConstraintsForm({
-	constraints,
-	onChange,
-	errors = {},
-}) {
-	function updateConstraint(field, value) {
-		onChange({
-			...constraints,
-			[field]: value,
-		});
-	}
-
+export default function IdeationConstraintsForm({ form }) {
 	return (
 		<Section aria-labelledby="constraints-heading">
 			<StepHeader
@@ -39,196 +31,207 @@ export default function IdeationConstraintsForm({
 				}}
 			/>
 
-			<fieldset className="rounded-card border border-border bg-white p-4 shadow-sm sm:p-5">
-				<FeatureGrid columns={2}>
-					<div className="sm:col-span-2">
-						<label
-							htmlFor="ideation-goal"
-							className="text-sm font-medium"
-						>
-							What would you like to achieve?
-							<span className="ml-1 font-normal text-muted">
-								(optional)
-							</span>
-						</label>
+			<Card className="rounded-xl shadow-sm">
+				<CardContent>
+					<FieldSet>
+						<FeatureGrid columns={2}>
+							<form.Field
+								name="constraints.goal"
+								children={(field) => {
+									const isInvalid =
+										field.state.meta.isTouched &&
+										!field.state.meta.isValid;
+									return (
+										<Field
+											data-invalid={isInvalid}
+											className="sm:col-span-2"
+										>
+											<FieldLabel htmlFor={field.name}>
+												What would you like to achieve?{" "}
+												<span className="ml-1 font-normal text-muted-foreground">
+													(optional)
+												</span>
+											</FieldLabel>
 
-						<input
-							id="ideation-goal"
-							name="goal"
-							type="text"
-							maxLength={500}
-							value={constraints.goal ?? ""}
-							onChange={(event) =>
-								updateConstraint("goal", event.target.value)
-							}
-							placeholder="e.g. Create useful household items"
-							className={inputClassName}
-							aria-invalid={Boolean(errors.goal)}
-							aria-describedby={
-								errors.goal ? "ideation-goal-error" : undefined
-							}
-						/>
+											<Input
+												id={field.name}
+												name={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(event) =>
+													field.handleChange(
+														event.target.value,
+													)
+												}
+												aria-invalid={isInvalid}
+												placeholder="e.g. Create useful household items"
+												autoComplete="off"
+											/>
 
-						<span className="mt-1 flex items-start justify-between gap-3">
-							<FieldError
-								id="ideation-goal-error"
-								message={errors.goal}
+											{isInvalid && (
+												<FieldError
+													errors={
+														field.state.meta.errors
+													}
+												/>
+											)}
+										</Field>
+									);
+								}}
 							/>
 
-							{constraints.goal.length >= 1 && (
-								<Text
-									className="ml-auto shrink-0 text-xs"
-									size="text-xs"
-								>
-									{(constraints.goal ?? "").length} / 500
-								</Text>
-							)}
-						</span>
-					</div>
+							<form.Field
+								name="constraints.environment"
+								children={(field) => {
+									const isInvalid =
+										field.state.meta.isTouched &&
+										!field.state.meta.isValid;
+									return (
+										<Field data-invalid={isInvalid}>
+											<FieldLabel htmlFor={field.name}>
+												Where will you work?{" "}
+												<span className="ml-1 font-normal text-muted-foreground">
+													(optional)
+												</span>
+											</FieldLabel>
 
-					<div>
-						<label
-							htmlFor="ideation-environment"
-							className="text-sm font-medium"
-						>
-							Where will you work?
-							<span className="ml-1 font-normal text-muted">
-								(optional)
-							</span>
-						</label>
+											<Input
+												id={field.name}
+												name={field.name}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(event) =>
+													field.handleChange(
+														event.target.value,
+													)
+												}
+												aria-invalid={isInvalid}
+												placeholder="e.g. Small home workshop"
+												autoComplete="off"
+											/>
 
-						<input
-							id="ideation-environment"
-							name="environment"
-							type="text"
-							maxLength={300}
-							value={constraints.environment ?? ""}
-							onChange={(event) =>
-								updateConstraint(
-									"environment",
-									event.target.value,
-								)
-							}
-							placeholder="e.g. Small home workshop"
-							className={inputClassName}
-							aria-invalid={Boolean(errors.environment)}
-							aria-describedby={
-								errors.environment
-									? "ideation-environment-error"
-									: undefined
-							}
-						/>
-
-						<span className="mt-1 flex items-start justify-between gap-3">
-							<FieldError
-								id="ideation-environment-error"
-								message={errors.environment}
+											{isInvalid && (
+												<FieldError
+													errors={
+														field.state.meta.errors
+													}
+												/>
+											)}
+										</Field>
+									);
+								}}
 							/>
 
-							{constraints.environment.length >= 1 && (
-								<Text
-									className="ml-auto shrink-0 text-xs"
-									size="text-xs"
-								>
-									{(constraints.environment ?? "").length} /
-									300
-								</Text>
-							)}
-						</span>
-					</div>
+							<form.Field
+								name="constraints.skillLevel"
+								children={(field) => {
+									const isInvalid =
+										field.state.meta.isTouched &&
+										!field.state.meta.isValid;
+									return (
+										<Field data-invalid={isInvalid}>
+											<FieldLabel htmlFor={field.name}>
+												Your experience{" "}
+												<span className="ml-1 font-normal text-muted-foreground">
+													(optional)
+												</span>
+											</FieldLabel>
 
-					<div>
-						<label
-							htmlFor="ideation-skill-level"
-							className="text-sm font-medium"
-						>
-							Your experience
-							<span className="ml-1 font-normal text-muted">
-								(optional)
-							</span>
-						</label>
+											<Select
+												value={field.state.value}
+												onValueChange={(value) =>
+													field.handleChange(value)
+												}
+											>
+												<SelectTrigger
+													id={field.name}
+													aria-invalid={isInvalid}
+													className="w-full"
+												>
+													<SelectValue placeholder="Choose a skill level" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectGroup>
+														{SKILL_LEVEL_OPTIONS.map(
+															(level) => (
+																<SelectItem
+																	key={
+																		level.value
+																	}
+																	value={
+																		level.value
+																	}
+																>
+																	{
+																		level.label
+																	}
+																</SelectItem>
+															),
+														)}
+													</SelectGroup>
+												</SelectContent>
+											</Select>
 
-						<select
-							id="ideation-skill-level"
-							name="skillLevel"
-							value={constraints.skillLevel ?? ""}
-							onChange={(event) =>
-								updateConstraint(
-									"skillLevel",
-									event.target.value,
-								)
-							}
-							className={inputClassName}
-							aria-invalid={Boolean(errors.skillLevel)}
-							aria-describedby={
-								errors.skillLevel
-									? "ideation-skill-level-error"
-									: undefined
-							}
-						>
-							<option value="">Choose a skill level</option>
-
-							{SKILL_LEVEL_OPTIONS.map((option) => (
-								<option key={option.value} value={option.value}>
-									{option.label}
-								</option>
-							))}
-						</select>
-
-						<FieldError
-							id="ideation-skill-level-error"
-							message={errors.skillLevel}
-						/>
-					</div>
-
-					<div className="sm:col-span-2">
-						<label
-							htmlFor="ideation-notes"
-							className="text-sm font-medium"
-						>
-							Additional preferences
-							<span className="ml-1 font-normal text-muted">
-								(optional)
-							</span>
-						</label>
-
-						<textarea
-							id="ideation-notes"
-							name="notes"
-							rows={4}
-							maxLength={1500}
-							value={constraints.notes ?? ""}
-							onChange={(event) =>
-								updateConstraint("notes", event.target.value)
-							}
-							placeholder="e.g. Prefer basic hand tools and low-cost additional materials."
-							className={`${inputClassName} resize-y`}
-							aria-invalid={Boolean(errors.notes)}
-							aria-describedby={
-								errors.notes
-									? "ideation-notes-error"
-									: undefined
-							}
-						/>
-
-						<span className="mt-1 flex items-start justify-between gap-3">
-							<FieldError
-								id="ideation-notes-error"
-								message={errors.notes}
+											{isInvalid && (
+												<FieldError
+													errors={
+														field.state.meta.errors
+													}
+												/>
+											)}
+										</Field>
+									);
+								}}
 							/>
 
-							{constraints.notes.length >= 1 && (
-								<Text
-									className="ml-auto shrink-0 text-xs"
-									size="text-xs"
-								>
-									{(constraints.notes ?? "").length} / 1500
-								</Text>
-							)}
-						</span>
-					</div>
-				</FeatureGrid>
-			</fieldset>
+							<form.Field
+								name="constraints.notes"
+								children={(field) => {
+									const isInvalid =
+										field.state.meta.isTouched &&
+										!field.state.meta.isValid;
+									return (
+										<Field
+											data-invalid={isInvalid}
+											className="sm:col-span-2"
+										>
+											<FieldLabel htmlFor={field.name}>
+												Additional preferences{" "}
+												<span className="ml-1 font-normal text-muted-foreground">
+													(optional)
+												</span>
+											</FieldLabel>
+
+											<Textarea
+												id={field.name}
+												name={field.name}
+												rows={4}
+												value={field.state.value}
+												onBlur={field.handleBlur}
+												onChange={(event) =>
+													field.handleChange(
+														event.target.value,
+													)
+												}
+												aria-invalid={isInvalid}
+												placeholder="e.g. Prefer basic hand tools and low-cost additional materials."
+											/>
+
+											{isInvalid && (
+												<FieldError
+													errors={
+														field.state.meta.errors
+													}
+												/>
+											)}
+										</Field>
+									);
+								}}
+							/>
+						</FeatureGrid>
+					</FieldSet>
+				</CardContent>
+			</Card>
 		</Section>
 	);
 }
