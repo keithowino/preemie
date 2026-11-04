@@ -1,17 +1,16 @@
 import { useState } from "react";
-import {
-	FeatureGrid,
-	Form,
-	FormActions,
-	FormError,
-	FormField,
-	FormInput,
-	FormLabel,
-} from "../../../lib/index.js";
+import { FormError } from "../../../lib/index.js";
 import { useIdentity } from "../../../platform/index.js";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getDestination, getErrorMessage } from "../utils.js";
 import { Button } from "@/components/ui/button.jsx";
+import {
+	Field,
+	FieldDescription,
+	FieldGroup,
+	FieldLabel,
+} from "@/components/ui/field.jsx";
+import { Input } from "@/components/ui/input.jsx";
 
 const RegisterPage = () => {
 	const { isAuthenticated, register } = useIdentity();
@@ -68,113 +67,145 @@ const RegisterPage = () => {
 	}
 
 	return (
-		<Form onSubmit={handleSubmit} noValidate>
-			<FeatureGrid columns={1}>
-				<FormField>
-					<FormLabel htmlFor="signup-first-name" required>
-						First Name
-					</FormLabel>
-					<FormInput
-						id="signup-first-name"
-						name="firstName"
-						type="text"
-						autoComplete="given-name"
-						required
-						maxLength={50}
-						value={firstName}
-						onChange={(event) => setFirstName(event.target.value)}
-					/>
-				</FormField>
-				<FormField>
-					<FormLabel htmlFor="signup-first-name">Last Name</FormLabel>
-					<FormInput
-						id="signup-last-name"
-						name="lastName"
-						type="text"
-						autoComplete="additional-name"
-						maxLength={50}
-						value={lastName}
-						onChange={(event) => setLastName(event.target.value)}
-					/>
-				</FormField>
-				<FormField>
-					<FormLabel htmlFor="signup-email" required>
-						Email address
-					</FormLabel>
-					<FormInput
+		<form onSubmit={handleSubmit} noValidate>
+			<FieldGroup>
+				<Field className="grid grid-cols-2 gap-4">
+					<Field>
+						<FieldLabel htmlFor="signup-first-name">
+							First Name{" "}
+							<span className="text-destructive">*</span>
+						</FieldLabel>
+						<Input
+							id="signup-first-name"
+							name="firstName"
+							type="text"
+							placeholder="John"
+							autoComplete="given-name"
+							required
+							maxLength={50}
+							value={firstName}
+							onChange={(event) =>
+								setFirstName(event.target.value)
+							}
+						/>
+					</Field>
+					<Field>
+						<FieldLabel htmlFor="signup-last-name">
+							Last Name
+						</FieldLabel>
+						<Input
+							id="signup-last-name"
+							name="lastName"
+							type="text"
+							placeholder="Doe"
+							required
+							autoComplete="additional-name"
+							maxLength={50}
+							value={lastName}
+							onChange={(event) =>
+								setLastName(event.target.value)
+							}
+						/>
+					</Field>
+				</Field>
+				<Field>
+					<FieldLabel htmlFor="signup-email">
+						Email <span className="text-destructive">*</span>
+					</FieldLabel>
+					<Input
 						id="signup-email"
 						type="email"
+						placeholder="me@example.com"
 						autoComplete="email"
 						required
 						maxLength={254}
 						value={email}
 						onChange={(event) => setEmail(event.target.value)}
 					/>
-				</FormField>
-				<FormField>
-					<FormLabel htmlFor="signup-phone">Phone Number</FormLabel>
-					<FormInput
+				</Field>
+				<Field>
+					<FieldLabel htmlFor="signup-phone">Phone</FieldLabel>
+					<Input
 						id="signup-phone"
+						placeholder="+254 712 345 678"
 						type="tel"
 						autoComplete="tel"
 						maxLength={30}
 						value={phone}
 						onChange={(event) => setPhone(event.target.value)}
 					/>
-				</FormField>
-				<FormField>
-					<FormLabel htmlFor="signup-password" required>
-						Password
-					</FormLabel>
-					<FormInput
-						id="signup-password"
-						type="password"
-						autoComplete="new-password"
-						required
-						minLength={8}
-						maxLength={128}
-						value={password}
-						onChange={(event) => setPassword(event.target.value)}
-					/>
-				</FormField>
-				<FormField>
-					<FormLabel htmlFor="signup-confirm-password" required>
-						Confirm Password
-					</FormLabel>
-					<FormInput
-						id="signup-confirm-password"
-						type="password"
-						autoComplete="new-password"
-						required
-						minLength={8}
-						maxLength={128}
-						value={confirmPassword}
-						onChange={(event) =>
-							setConfirmPassword(event.target.value)
-						}
-					/>
-				</FormField>
-			</FeatureGrid>
+				</Field>
+				<Field>
+					<Field className="grid grid-cols-2 gap-4">
+						<Field>
+							<FieldLabel htmlFor="signup-password">
+								Password{" "}
+								<span className="text-destructive">*</span>
+							</FieldLabel>
+							<Input
+								id="signup-password"
+								type="password"
+								autoComplete="new-password"
+								required
+								minLength={8}
+								maxLength={128}
+								value={password}
+								onChange={(event) =>
+									setPassword(event.target.value)
+								}
+							/>
+						</Field>
+						<Field>
+							<FieldLabel htmlFor="signup-signup-confirm-password">
+								Confirm Password{" "}
+								<span className="text-destructive">*</span>
+							</FieldLabel>
+							<Input
+								id="signup-confirm-password"
+								type="password"
+								autoComplete="new-password"
+								required
+								minLength={8}
+								maxLength={128}
+								value={confirmPassword}
+								onChange={(event) =>
+									setConfirmPassword(event.target.value)
+								}
+							/>
+						</Field>
+					</Field>
+					<FieldDescription>
+						Must be at least 8 characters long.
+					</FieldDescription>
+				</Field>
 
-			{feedback && (
-				<FormError clearError={setFeedback}>
-					{feedback.message}
-				</FormError>
-			)}
+				{feedback && (
+					<FormError clearError={setFeedback}>
+						{feedback.message}
+					</FormError>
+				)}
 
-			<FormActions>
-				<Button
-					type="submit"
-					disabled={isSubmitting}
-					// variant="secondary"
-					variant="default"
-					className="rounded-md"
-					// fullWidthMobile
-				>
-					{isSubmitting ? "Please wait..." : "Create account"}
-				</Button>
-			</FormActions>
-		</Form>
+				<Field>
+					<Button
+						type="submit"
+						disabled={isSubmitting}
+						className="rounded-md"
+					>
+						{isSubmitting ? "Please wait..." : "Create account"}
+					</Button>
+					<FieldDescription className="text-center">
+						Already have an account?
+						<Link
+							to="/login"
+							state={{ from: location.state?.from }}
+							className="font-semibold text-graphite underline underline-offset-4"
+						>
+							Sign in
+						</Link>
+					</FieldDescription>
+				</Field>
+			</FieldGroup>
+		</form>
 	);
 };
 
