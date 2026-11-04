@@ -14,6 +14,7 @@ import {
 	IdentityProvider,
 	NotificationProvider,
 } from "../../platform/index.js";
+import { TooltipProvider } from "@/components/ui/tooltip.jsx";
 
 /**
 |--------------------------------------------------
@@ -96,7 +97,9 @@ export function AppProviders({ children }) {
 		<NotificationProvider>
 			<IdentityProvider>
 				<QueryClientProvider client={queryClient}>
-					<HelmetProvider>{children}</HelmetProvider>
+					<HelmetProvider>
+						<TooltipProvider>{children}</TooltipProvider>
+					</HelmetProvider>
 				</QueryClientProvider>
 			</IdentityProvider>
 		</NotificationProvider>

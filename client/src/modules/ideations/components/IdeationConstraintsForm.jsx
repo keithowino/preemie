@@ -25,7 +25,7 @@ export default function IdeationConstraintsForm({ form }) {
 			<StepHeader
 				load={{
 					step: 2,
-					hId: "constraints-heading",
+					hId: "constraints",
 					label: "Shape your project",
 					desc: "Add context to help Preemie suggest ideas that suit your goals, workspace, and experience.",
 				}}

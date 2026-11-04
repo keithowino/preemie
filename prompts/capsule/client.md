@@ -179,3 +179,33 @@ We can now follow this sequence:
 6. Update the documentation.
 
 ---
+
+I might need to implement such an architecture for headings:
+
+```html
+<h3 class="flex scroll-m-28 flex-row items-center gap-2 undefined" id="urls">
+	<a data-card="" class="peer" href="?id=urls#urls">URLs</a
+	><svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		class="lucide lucide-link size-3.5 shrink-0 text-fd-muted-foreground opacity-0 transition-opacity peer-hover:opacity-100"
+		aria-label="Link to section"
+	>
+		<path
+			d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+		></path>
+		<path
+			d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+		></path>
+	</svg>
+</h3>
+```
+
+---

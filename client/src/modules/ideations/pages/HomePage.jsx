@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -20,6 +20,12 @@ import { Text } from "@/components/ui/typography/Text.jsx";
 
 import { createIdeation } from "../services/index.js";
 import { formSchema } from "../validators/ideationFormSchema.js";
+
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const EMPTY_MATERIAL = {
 	name: "",
@@ -50,6 +56,18 @@ export default function HomePage() {
 	 * server/network errors.
 	 */
 	const [submitError, setSubmitError] = useState(null);
+
+	/**
+	 * Flips to true on the first submit attempt. Used to gate the
+	 * "Review the highlighted fields" banner so it doesn't show while
+	 * the user is still filling out the form for the first time.
+	 */
+	const [submitAttempted, setSubmitAttempted] = useState(false);
+
+	/**
+	 * Anchor we scroll back to when a submit is rejected by validation.
+	 */
+	const formTopRef = useRef(null);
 
 	const form = useForm({
 		defaultValues: INITIAL_VALUES,
@@ -124,6 +142,13 @@ export default function HomePage() {
 				setSubmitError(message);
 			}
 		},
+
+		listeners: {
+			onChange: () => {
+				setSubmitError(null);
+				setSelectedExampleId(null);
+			},
+		},
 	});
 
 	function applyExample(example) {
@@ -150,6 +175,45 @@ export default function HomePage() {
 		setSelectedExampleId(example.id);
 		setSubmitError(null);
 	}
+
+	/**
+	 * When a submit is attempted and the form is invalid, move the user
+	 * back to the top of the form so they can see the inline errors.
+	 *
+	 * Keyed on `submitAttempted` so it fires exactly once per submit
+	 * attempt, not on every re-render caused by typing.
+	 */
+	useEffect(() => {
+		if (!submitAttempted) {
+			return;
+		}
+
+		const id = window.requestAnimationFrame(() => {
+			/**
+			 * The form element contains every field with an id equal
+			 * to its name. The first one with aria-invalid="true" is
+			 * where the user should be looking.
+			 */
+			const firstInvalid = formTopRef.current?.querySelector(
+				'[aria-invalid="true"]',
+			);
+
+			if (firstInvalid instanceof HTMLElement) {
+				firstInvalid.focus({ preventScroll: false });
+				return;
+			}
+
+			/**
+			 * Fallback: nothing is invalid (stale state), scroll to top.
+			 */
+			formTopRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "start",
+			});
+		});
+
+		return () => window.cancelAnimationFrame(id);
+	}, [submitAttempted]);
 
 	return (
 		<>
@@ -227,14 +291,40 @@ export default function HomePage() {
 
 				<form
 					id="project-form"
+					ref={formTopRef}
 					noValidate
 					onSubmit={(event) => {
 						event.preventDefault();
 						event.stopPropagation();
+
+						setSubmitAttempted(true);
 						form.handleSubmit();
 					}}
-					className="mt-12 space-y-10"
+					className="mt-12 scroll-mt-24 space-y-10"
 				>
+					<form.Subscribe
+						selector={(state) => ({
+							isValid: state.isValid,
+							fieldErrors: state.fieldMeta,
+						})}
+					>
+						{({ isValid }) => {
+							const showValidationSummary =
+								submitAttempted && !isValid;
+
+							return showValidationSummary ? (
+								<div
+									role="alert"
+									aria-live="polite"
+									className="mb-6 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive"
+								>
+									Review the highlighted fields before
+									continuing.
+								</div>
+							) : null;
+						}}
+					</form.Subscribe>
+
 					<MaterialEditor form={form} />
 
 					<div className="border-t border-border" />
@@ -255,10 +345,11 @@ export default function HomePage() {
 						<form.Subscribe
 							selector={(state) => ({
 								isSubmitting: state.isSubmitting,
+								isValid: state.isValid,
 								canSubmit: state.canSubmit,
 							})}
 						>
-							{({ isSubmitting, canSubmit }) => (
+							{({ isSubmitting, canSubmit, isValid }) => (
 								<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 									<Text className="max-w-xl">
 										{platform.name} will use your materials
@@ -267,9 +358,16 @@ export default function HomePage() {
 										useful.
 									</Text>
 
-									<Button
+									{/* <Button
 										type="submit"
 										disabled={isSubmitting || !canSubmit}
+										title={
+											isSubmitting
+												? "Generating ideas..."
+												: !isValid
+													? "Please fix the highlighted fields before continuing"
+													: "Generate ideas"
+										}
 										size="lg"
 									>
 										{isSubmitting
@@ -283,7 +381,81 @@ export default function HomePage() {
 												→
 											</span>
 										)}
-									</Button>
+									</Button> */}
+									{/* <span
+										className="inline-flex"
+										title={
+											isSubmitting
+												? "Generating ideas..."
+												: !isValid
+													? "Please fix the highlighted fields before continuing"
+													: undefined
+										}
+									>
+										<Button
+											type="submit"
+											disabled={
+												isSubmitting || !canSubmit
+											}
+											size="lg"
+										>
+											{isSubmitting
+												? "Generating ideas..."
+												: "Generate ideas"}
+											{!isSubmitting && (
+												<span
+													aria-hidden="true"
+													className="ml-2"
+												>
+													→
+												</span>
+											)}
+										</Button>
+									</span> */}
+
+									<Tooltip>
+										<TooltipTrigger asChild>
+											{/* The trigger must be focusable for keyboard a11y. */}
+											<span
+												tabIndex={0}
+												className="inline-flex"
+											>
+												<Button
+													type="submit"
+													disabled={
+														isSubmitting ||
+														!canSubmit
+													}
+													size="lg"
+												>
+													{isSubmitting
+														? "Generating ideas..."
+														: "Generate ideas"}
+													{!isSubmitting && (
+														<span
+															aria-hidden="true"
+															className="ml-2"
+														>
+															→
+														</span>
+													)}
+												</Button>
+											</span>
+										</TooltipTrigger>
+
+										{!isSubmitting && !isValid && (
+											<TooltipContent>
+												Please fix the highlighted
+												fields before continuing
+											</TooltipContent>
+										)}
+
+										{isSubmitting && (
+											<TooltipContent>
+												Generating ideas...
+											</TooltipContent>
+										)}
+									</Tooltip>
 								</div>
 							)}
 						</form.Subscribe>

@@ -12,6 +12,11 @@ import {
 	FieldLegend,
 	FieldSet,
 } from "@/components/ui/field.jsx";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip.jsx";
 
 const MAX_MATERIALS = 30;
 
@@ -35,7 +40,7 @@ export default function MaterialEditor({ form }) {
 						<StepHeader
 							load={{
 								step: 1,
-								hId: "materials-heading",
+								hId: "materials",
 								label: "What do you have?",
 								desc: "List the materials you can use. Add quantities and conditions when you know them.",
 							}}
@@ -66,28 +71,45 @@ export default function MaterialEditor({ form }) {
 												Material {index + 1}
 											</FieldLegend>
 
-											<Button
-												type="button"
-												variant="primary"
-												size="sm"
-												onClick={() =>
-													materialsField.removeValue(
-														index,
-													)
-												}
-												disabled={
-													materialsField.state.value
-														.length === 1
-												}
-												title={
-													materialsField.state.value
-														.length === 1
-														? "At least one material is required"
-														: "Remove this material"
-												}
-											>
-												Remove
-											</Button>
+											<Tooltip>
+												<TooltipTrigger asChild>
+													<span
+														tabIndex={0}
+														className="inline-flex"
+													>
+														<Button
+															type="button"
+															variant="primary"
+															size="sm"
+															onClick={() =>
+																materialsField.removeValue(
+																	index,
+																)
+															}
+															disabled={
+																materialsField
+																	.state.value
+																	.length ===
+																1
+															}
+														>
+															Remove
+														</Button>
+													</span>
+												</TooltipTrigger>
+
+												{materialsField.state.value
+													.length === 1 ? (
+													<TooltipContent>
+														At least one material is
+														required
+													</TooltipContent>
+												) : (
+													<TooltipContent>
+														Remove this material
+													</TooltipContent>
+												)}
+											</Tooltip>
 										</div>
 
 										<FeatureGrid columns={2}>
@@ -158,20 +180,41 @@ export default function MaterialEditor({ form }) {
 							</Card>
 						))}
 
-						<Button
-							type="button"
-							variant="outline"
-							size="sm"
-							onClick={() =>
-								materialsField.pushValue({ ...EMPTY_MATERIAL })
-							}
-							disabled={
-								materialsField.state.value.length >=
-								MAX_MATERIALS
-							}
-						>
-							+ Add another material
-						</Button>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<span tabIndex={0} className="inline-flex">
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={() =>
+											materialsField.pushValue({
+												...EMPTY_MATERIAL,
+											})
+										}
+										disabled={
+											materialsField.state.value.length >=
+											MAX_MATERIALS
+										}
+									>
+										+ Add another material
+									</Button>
+								</span>
+							</TooltipTrigger>
+
+							{materialsField.state.value.length >=
+							MAX_MATERIALS ? (
+								<TooltipContent>
+									At most {MAX_MATERIALS} materials can be
+									added. Remove one to add another.
+								</TooltipContent>
+							) : (
+								<TooltipContent>
+									{materialsField.state.value.length} /{" "}
+									{MAX_MATERIALS}
+								</TooltipContent>
+							)}
+						</Tooltip>
 					</div>
 				)}
 			</form.Field>
