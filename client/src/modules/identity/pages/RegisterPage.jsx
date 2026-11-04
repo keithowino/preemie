@@ -1,198 +1,164 @@
 import { useState } from "react";
-import { FormError } from "../../../lib/index.js";
 import { useIdentity } from "../../../platform/index.js";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getDestination, getErrorMessage } from "../utils.js";
 import { Button } from "@/components/ui/button.jsx";
-import {
-	Field,
-	FieldDescription,
-	FieldGroup,
-	FieldLabel,
-} from "@/components/ui/field.jsx";
-import { Input } from "@/components/ui/input.jsx";
+import { FieldDescription, FieldGroup } from "@/components/ui/field.jsx";
+import { useForm } from "@tanstack/react-form";
+import { registerFormSchema } from "../validators/authSchema.js";
+import AuthTextField from "../components/AuthTextField.jsx";
+import { Text } from "@/components/ui/typography/Text.jsx";
 
-const RegisterPage = () => {
-	const { isAuthenticated, register } = useIdentity();
+export default function RegisterPage() {
+	const { register } = useIdentity();
 
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [email, setEmail] = useState("");
-	const [phone, setPhone] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-	const [feedback, setFeedback] = useState(null);
+	const [submitError, setSubmitError] = useState(null);
 
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const form = useForm({
+		defaultValues: {
+			firstName: "",
+			lastName: "",
+			email: "",
+			phone: "",
+			password: "",
+			confirmPassword: "",
+		},
 
-	if (isAuthenticated) {
-		return navigate(getDestination(location), { replace: true });
-	}
+		validators: {
+			onSubmit: registerFormSchema,
+			onchange: registerFormSchema,
+			onBlur: registerFormSchema,
+		},
 
-	async function handleSubmit(event) {
-		event.preventDefault();
+		onSubmit: async ({ value }) => {
+			setSubmitError(null);
 
-		if (isSubmitting) return;
+			try {
+				await register({
+					firstName: value.firstName.trim(),
+					lastName: value.lastName.trim(),
+					email: value.email.trim(),
+					phone: value.phone.trim(),
+					password: value.password,
+				});
 
-		setIsSubmitting(true);
-		setFeedback(null);
-
-		if (password !== confirmPassword) {
-			setFeedback({ type: "error", message: "Passwords do not match." });
-
-			return;
-		}
-
-		try {
-			await register({
-				firstName: firstName.trim(),
-				lastName: lastName.trim(),
-				email: email.trim(),
-				phone: phone.trim(),
-				password,
-			});
-
-			navigate(getDestination(location), { replace: true });
-		} catch (error) {
-			setFeedback({
-				type: "error",
-				message: getErrorMessage(error, "register"),
-			});
-		} finally {
-			setIsSubmitting(false);
-		}
-	}
+				navigate(getDestination(location), { replace: true });
+			} catch (error) {
+				setSubmitError(getErrorMessage(error, "register"));
+			}
+		},
+	});
 
 	return (
-		<form onSubmit={handleSubmit} noValidate>
+		<form
+			id="register-user-form"
+			noValidate
+			onSubmit={(event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				form.handleSubmit();
+			}}
+		>
 			<FieldGroup>
-				<Field className="grid grid-cols-2 gap-4">
-					<Field>
-						<FieldLabel htmlFor="signup-first-name">
-							First Name{" "}
-							<span className="text-destructive">*</span>
-						</FieldLabel>
-						<Input
-							id="signup-first-name"
-							name="firstName"
-							type="text"
-							placeholder="John"
-							autoComplete="given-name"
-							required
-							maxLength={50}
-							value={firstName}
-							onChange={(event) =>
-								setFirstName(event.target.value)
-							}
-						/>
-					</Field>
-					<Field>
-						<FieldLabel htmlFor="signup-last-name">
-							Last Name
-						</FieldLabel>
-						<Input
-							id="signup-last-name"
-							name="lastName"
-							type="text"
-							placeholder="Doe"
-							required
-							autoComplete="additional-name"
-							maxLength={50}
-							value={lastName}
-							onChange={(event) =>
-								setLastName(event.target.value)
-							}
-						/>
-					</Field>
-				</Field>
-				<Field>
-					<FieldLabel htmlFor="signup-email">
-						Email <span className="text-destructive">*</span>
-					</FieldLabel>
-					<Input
-						id="signup-email"
-						type="email"
-						placeholder="me@example.com"
-						autoComplete="email"
+				<div className="grid grid-cols-2 gap-4">
+					<AuthTextField
+						autoComplete="given-name"
+						label="First Name"
+						maxLength={50}
+						placeholder="John"
 						required
-						maxLength={254}
-						value={email}
-						onChange={(event) => setEmail(event.target.value)}
+						form={form}
+						fieldName="firstName"
 					/>
-				</Field>
-				<Field>
-					<FieldLabel htmlFor="signup-phone">Phone</FieldLabel>
-					<Input
-						id="signup-phone"
-						placeholder="+254 712 345 678"
-						type="tel"
-						autoComplete="tel"
-						maxLength={30}
-						value={phone}
-						onChange={(event) => setPhone(event.target.value)}
-					/>
-				</Field>
-				<Field>
-					<Field className="grid grid-cols-2 gap-4">
-						<Field>
-							<FieldLabel htmlFor="signup-password">
-								Password{" "}
-								<span className="text-destructive">*</span>
-							</FieldLabel>
-							<Input
-								id="signup-password"
-								type="password"
-								autoComplete="new-password"
-								required
-								minLength={8}
-								maxLength={128}
-								value={password}
-								onChange={(event) =>
-									setPassword(event.target.value)
-								}
-							/>
-						</Field>
-						<Field>
-							<FieldLabel htmlFor="signup-signup-confirm-password">
-								Confirm Password{" "}
-								<span className="text-destructive">*</span>
-							</FieldLabel>
-							<Input
-								id="signup-confirm-password"
-								type="password"
-								autoComplete="new-password"
-								required
-								minLength={8}
-								maxLength={128}
-								value={confirmPassword}
-								onChange={(event) =>
-									setConfirmPassword(event.target.value)
-								}
-							/>
-						</Field>
-					</Field>
-					<FieldDescription>
-						Must be at least 8 characters long.
-					</FieldDescription>
-				</Field>
 
-				{feedback && (
-					<FormError clearError={setFeedback}>
-						{feedback.message}
-					</FormError>
+					<AuthTextField
+						autoComplete="additional-name"
+						fieldName="lastName"
+						form={form}
+						label="Last Name"
+						maxLength={50}
+						placeholder="Doe"
+					/>
+				</div>
+
+				<AuthTextField
+					autoComplete="email"
+					fieldName="email"
+					form={form}
+					label="Email"
+					maxLength={254}
+					placeholder="me@example.com"
+					required
+					type="email"
+				/>
+				<AuthTextField
+					autoComplete="tel"
+					fieldName="phone"
+					form={form}
+					label="Phone"
+					maxLength={30}
+					placeholder="+254 712 345 678"
+					type="tel"
+				/>
+
+				<div className="grid grid-cols-2 gap-4">
+					<AuthTextField
+						autoComplete="new-password"
+						fieldName="password"
+						form={form}
+						label="Password"
+						maxLength={128}
+						minLength={8}
+						required
+						type="password"
+					/>
+
+					<AuthTextField
+						autoComplete="new-password"
+						fieldName="confirmPassword"
+						form={form}
+						label="Confirm Password"
+						maxLength={128}
+						minLength={8}
+						required
+						type="password"
+					/>
+				</div>
+
+				{submitError && (
+					<Text
+						className="mb-5 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive"
+						role="alert"
+						aria-live="polite"
+					>
+						{submitError}
+					</Text>
 				)}
 
-				<Field>
-					<Button
-						type="submit"
-						disabled={isSubmitting}
-						className="rounded-md"
+				<div className="flex flex-col gap-3">
+					<form.Subscribe
+						selector={(state) => ({
+							isSubmitting: state.isSubmitting,
+							isValid: state.isValid,
+							canSubmit: state.canSubmit,
+						})}
 					>
-						{isSubmitting ? "Please wait..." : "Create account"}
-					</Button>
+						{({ isSubmitting, canSubmit, isValid }) => (
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								className="rounded-md"
+							>
+								{isSubmitting
+									? "Please wait..."
+									: "Create account"}
+							</Button>
+						)}
+					</form.Subscribe>
+
 					<FieldDescription className="text-center">
 						Already have an account?
 						<Link
@@ -203,10 +169,8 @@ const RegisterPage = () => {
 							Sign in
 						</Link>
 					</FieldDescription>
-				</Field>
+				</div>
 			</FieldGroup>
 		</form>
 	);
-};
-
-export default RegisterPage;
+}
