@@ -9,15 +9,16 @@ export default function FormError({ children, clearError }) {
 
 	return (
 		<Text
-			className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"
+			className="mb-5 flex items-center justify-between rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive"
 			role="alert"
+			aria-live="polite"
 		>
 			{children}{" "}
 			{clearError && (
 				<Button
 					variant="ghost"
 					size="sm"
-					onClick={() => clearError("")}
+					onClick={() => clearError(null)}
 				>
 					<IoClose />
 				</Button>

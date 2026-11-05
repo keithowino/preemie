@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useIdentity } from "../../../platform/index.js";
 
-import { FormError } from "../../../lib/index.js";
+import FormError from "@/components/ui/custom/FormError.jsx";
 import { getDestination, getErrorMessage } from "../utils.js";
 import { Button } from "@/components/ui/button.jsx";
 import {
@@ -19,6 +19,9 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip.jsx";
+import { useForm } from "@tanstack/react-form";
+import { loginFormSchema } from "../validators/authSchema.js";
+import AuthTextField from "../components/AuthTextField.jsx";
 
 export default function LoginPage() {
 	const { login } = useIdentity();
@@ -26,35 +29,46 @@ export default function LoginPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [feedback, setFeedback] = useState(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [submitError, setSubmitError] = useState(null);
 
-	async function handleSubmit(event) {
-		event.preventDefault();
+	const form = useForm({
+		defaultValues: {
+			email: "",
+			password: "",
+		},
 
-		if (isSubmitting) return;
+		validators: {
+			onSubmit: loginFormSchema,
+			onchange: loginFormSchema,
+			onBlur: loginFormSchema,
+		},
 
-		setIsSubmitting(true);
-		setFeedback(null);
+		onSubmit: async ({ value }) => {
+			setSubmitError(null);
 
-		try {
-			await login({ email: email.trim(), password });
+			try {
+				await login({
+					email: value.email.trim(),
+					password: value.password,
+				});
 
-			navigate(getDestination(location), { replace: true });
-		} catch (error) {
-			setFeedback({
-				type: "error",
-				message: getErrorMessage(error, "login"),
-			});
-		} finally {
-			setIsSubmitting(false);
-		}
-	}
+				navigate(getDestination(location), { replace: true });
+			} catch (error) {
+				setSubmitError(getErrorMessage(error, "login"));
+			}
+		},
+	});
 
 	return (
-		<form onSubmit={handleSubmit} noValidate>
+		<form
+			id="login-user-form"
+			noValidate
+			onSubmit={(event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				form.handleSubmit();
+			}}
+		>
 			<FieldGroup>
 				<Field>
 					<Button
@@ -98,66 +112,94 @@ export default function LoginPage() {
 					Or continue with
 				</FieldSeparator>
 
-				<Field>
-					<FieldLabel htmlFor="login-email">Email</FieldLabel>
-					<Input
-						id="login-email"
-						type="email"
-						autoComplete="email"
-						maxLength={254}
-						value={email}
-						onChange={(event) => setEmail(event.target.value)}
-						placeholder="me@example.com"
-						required
-					/>
-				</Field>
+				<AuthTextField
+					autoComplete="email"
+					fieldName="email"
+					form={form}
+					label="Email"
+					maxLength={254}
+					placeholder="me@example.com"
+					required
+					type="email"
+				/>
 
-				<Field>
-					<div className="flex items-center">
-						<FieldLabel htmlFor="login-password">
-							Password
-						</FieldLabel>
+				<form.Field
+					name="password"
+					children={(field) => {
+						const isInvalid =
+							field.state.meta.isTouched &&
+							!field.state.meta.isValid;
 
-						<span className="ml-auto">
-							<Tooltip>
-								<TooltipTrigger>
-									<a
-										href="#"
-										className="ml-auto text-sm underline-offset-4 hover:underline"
-									>
-										Forgot your password?
-									</a>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>This link is not yet live.</p>
-								</TooltipContent>
-							</Tooltip>
-						</span>
-					</div>
-					<Input
-						id="login-password"
-						type="password"
-						autoComplete="current-password"
-						required
-						value={password}
-						onChange={(event) => setPassword(event.target.value)}
-					/>
-				</Field>
+						return (
+							<Field data-invalid={isInvalid}>
+								<div className="flex items-center">
+									<FieldLabel htmlFor="auth-password">
+										Password{" "}
+										<span className="text-destructive">
+											*
+										</span>
+									</FieldLabel>
 
-				{feedback && (
-					<FormError clearError={setFeedback}>
-						{feedback.message}
+									<span className="ml-auto">
+										<Tooltip>
+											<TooltipTrigger>
+												<a
+													href="#"
+													className="ml-auto text-sm underline-offset-4 hover:underline"
+												>
+													Forgot your password?
+												</a>
+											</TooltipTrigger>
+											<TooltipContent>
+												<p>
+													This link is not yet live.
+												</p>
+											</TooltipContent>
+										</Tooltip>
+									</span>
+								</div>
+								<Input
+									id="auth-password"
+									type="password"
+									autoComplete="current-password"
+									required
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(event) =>
+										field.handleChange(event.target.value)
+									}
+									aria-invalid={isInvalid}
+								/>
+							</Field>
+						);
+					}}
+				/>
+
+				{submitError && (
+					<FormError clearError={setSubmitError}>
+						{submitError}
 					</FormError>
 				)}
 
-				<Field>
-					<Button
-						type="submit"
-						disabled={isSubmitting}
-						className="rounded-md"
+				<div className="flex flex-col gap-3">
+					<form.Subscribe
+						selector={(state) => ({
+							isSubmitting: state.isSubmitting,
+							isValid: state.isValid,
+							canSubmit: state.canSubmit,
+						})}
 					>
-						{isSubmitting ? "Please wait..." : "Log in"}
-					</Button>
+						{({ isSubmitting, canSubmit, isValid }) => (
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								className="rounded-md"
+							>
+								{isSubmitting ? "Please wait..." : "Log in"}
+							</Button>
+						)}
+					</form.Subscribe>
+
 					<FieldDescription className="text-center">
 						Don&apos;t have an account?{" "}
 						<Link
@@ -168,7 +210,7 @@ export default function LoginPage() {
 							Create one
 						</Link>
 					</FieldDescription>
-				</Field>
+				</div>
 			</FieldGroup>
 		</form>
 	);

@@ -1,0 +1,6 @@
+- Waiting list 1
+    - https://shadcnstudio.com/blocks/free#waitlist-01
+    - npx shadcn@latest add @ss-blocks/waitlist-01
+- Waiting list 2
+    - https://shadcnstudio.com/blocks/free#waitlist-02
+    - npx shadcn@latest add @ss-blocks/waitlist-02

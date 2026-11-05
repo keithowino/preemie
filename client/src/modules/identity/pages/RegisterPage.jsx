@@ -7,7 +7,7 @@ import { FieldDescription, FieldGroup } from "@/components/ui/field.jsx";
 import { useForm } from "@tanstack/react-form";
 import { registerFormSchema } from "../validators/authSchema.js";
 import AuthTextField from "../components/AuthTextField.jsx";
-import { Text } from "@/components/ui/typography/Text.jsx";
+import FormError from "@/components/ui/custom/FormError.jsx";
 
 export default function RegisterPage() {
 	const { register } = useIdentity();
@@ -129,13 +129,9 @@ export default function RegisterPage() {
 				</div>
 
 				{submitError && (
-					<Text
-						className="mb-5 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive"
-						role="alert"
-						aria-live="polite"
-					>
+					<FormError clearError={setSubmitError}>
 						{submitError}
-					</Text>
+					</FormError>
 				)}
 
 				<div className="flex flex-col gap-3">

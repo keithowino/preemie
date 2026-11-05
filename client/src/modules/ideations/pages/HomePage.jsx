@@ -21,12 +21,6 @@ import { Text } from "@/components/ui/typography/Text.jsx";
 import { createIdeation } from "../services/index.js";
 import { formSchema } from "../validators/ideationFormSchema.js";
 
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
-
 const EMPTY_MATERIAL = {
 	name: "",
 	quantity: "",
@@ -358,37 +352,13 @@ export default function HomePage() {
 										useful.
 									</Text>
 
-									{/* <Button
-										type="submit"
-										disabled={isSubmitting || !canSubmit}
-										title={
-											isSubmitting
-												? "Generating ideas..."
-												: !isValid
-													? "Please fix the highlighted fields before continuing"
-													: "Generate ideas"
-										}
-										size="lg"
-									>
-										{isSubmitting
-											? "Generating ideas..."
-											: "Generate ideas"}
-										{!isSubmitting && (
-											<span
-												aria-hidden="true"
-												className="ml-2"
-											>
-												→
-											</span>
-										)}
-									</Button> */}
-									{/* <span
+									<span
 										className="inline-flex"
 										title={
-											isSubmitting
-												? "Generating ideas..."
-												: !isValid
-													? "Please fix the highlighted fields before continuing"
+											!isSubmitting && !isValid
+												? "Please fix the highlighted fields before continuing"
+												: isSubmitting
+													? "Generating ideas..."
 													: undefined
 										}
 									>
@@ -411,51 +381,7 @@ export default function HomePage() {
 												</span>
 											)}
 										</Button>
-									</span> */}
-
-									<Tooltip>
-										<TooltipTrigger asChild>
-											{/* The trigger must be focusable for keyboard a11y. */}
-											<span
-												tabIndex={0}
-												className="inline-flex"
-											>
-												<Button
-													type="submit"
-													disabled={
-														isSubmitting ||
-														!canSubmit
-													}
-													size="lg"
-												>
-													{isSubmitting
-														? "Generating ideas..."
-														: "Generate ideas"}
-													{!isSubmitting && (
-														<span
-															aria-hidden="true"
-															className="ml-2"
-														>
-															→
-														</span>
-													)}
-												</Button>
-											</span>
-										</TooltipTrigger>
-
-										{!isSubmitting && !isValid && (
-											<TooltipContent>
-												Please fix the highlighted
-												fields before continuing
-											</TooltipContent>
-										)}
-
-										{isSubmitting && (
-											<TooltipContent>
-												Generating ideas...
-											</TooltipContent>
-										)}
-									</Tooltip>
+									</span>
 								</div>
 							)}
 						</form.Subscribe>
