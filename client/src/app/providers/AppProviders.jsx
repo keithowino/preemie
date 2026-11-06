@@ -10,11 +10,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 
+import { TooltipProvider } from "@/components/ui/tooltip.jsx";
 import {
 	IdentityProvider,
 	NotificationProvider,
-} from "../../platform/index.js";
-import { TooltipProvider } from "@/components/ui/tooltip.jsx";
+	ThemeProvider,
+} from "@/platform/index.js";
 
 /**
 |--------------------------------------------------
@@ -94,14 +95,16 @@ const queryClient = new QueryClient({
 */
 export function AppProviders({ children }) {
 	return (
-		<NotificationProvider>
-			<IdentityProvider>
-				<QueryClientProvider client={queryClient}>
-					<HelmetProvider>
-						<TooltipProvider>{children}</TooltipProvider>
-					</HelmetProvider>
-				</QueryClientProvider>
-			</IdentityProvider>
-		</NotificationProvider>
+		<ThemeProvider defaultTheme="dark" storageKey="preemie-ui-theme">
+			<NotificationProvider>
+				<IdentityProvider>
+					<QueryClientProvider client={queryClient}>
+						<HelmetProvider>
+							<TooltipProvider>{children}</TooltipProvider>
+						</HelmetProvider>
+					</QueryClientProvider>
+				</IdentityProvider>
+			</NotificationProvider>
+		</ThemeProvider>
 	);
 }

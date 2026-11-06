@@ -38,7 +38,7 @@ export default function LandingPage() {
 		<>
 			<MetaDataInsert title={platform.name} />
 
-			<Container>
+			<Container className="py-10">
 				{/* Hero */}
 				<Section className="relative overflow-hidden rounded-xl border border-border bg-secondary p-6 sm:p-10 lg:p-12">
 					<div

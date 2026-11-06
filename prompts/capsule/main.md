@@ -107,3 +107,16 @@ The session lifecycle should satisfy these requirements:
 tokenStorage.js stores both tokens in localStorage. This matches the current implementation, although it means JavaScript running on the page can access the refresh token as well as the access token. We might have to migration to an HTTP-only refresh-token cookie.
 
 ---
+
+```js
+import { isValidPhoneNumber } from "react-phone-number-input";
+
+z.string().refine(
+	(value) => !value || isValidPhoneNumber(value),
+	"Enter a valid phone number",
+);
+```
+
+That's stronger validation — it catches "+441" — but it depends on a library that has its own opinions about what's valid, and it returns true/false without telling you why a number failed, so the error message stays generic.
+
+---

@@ -1,10 +1,13 @@
 import { z } from "zod";
 
-const phoneSchema = z
-	.string()
-	.trim()
-	.max(30, "Phone number cannot exceed 30 characters")
-	.optional()
-	.or(z.literal(""));
+export const phoneSchema = z
+	.union([
+		z.literal(""),
+		z
+			.string()
+			.trim()
+			.regex(/^\+[1-9]\d{1,14}$/, "Enter a valid phone number."),
+	])
+	.optional();
 
 export default phoneSchema;

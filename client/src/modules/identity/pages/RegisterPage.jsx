@@ -1,13 +1,16 @@
+// "use client";
+
 import { useState } from "react";
 import { useIdentity } from "../../../platform/index.js";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getDestination, getErrorMessage } from "../utils.js";
+import { getDestination, getErrorMessage } from "../utils/index.js";
 import { Button } from "@/components/ui/button.jsx";
 import { FieldDescription, FieldGroup } from "@/components/ui/field.jsx";
 import { useForm } from "@tanstack/react-form";
 import { registerFormSchema } from "../validators/authSchema.js";
 import AuthTextField from "../components/AuthTextField.jsx";
 import FormError from "@/components/ui/custom/FormError.jsx";
+import { PhoneInput } from "@/components/ui/phone-input.jsx";
 
 export default function RegisterPage() {
 	const { register } = useIdentity();
@@ -29,7 +32,7 @@ export default function RegisterPage() {
 
 		validators: {
 			onSubmit: registerFormSchema,
-			onchange: registerFormSchema,
+			onChange: registerFormSchema,
 			onBlur: registerFormSchema,
 		},
 
@@ -95,12 +98,13 @@ export default function RegisterPage() {
 					type="email"
 				/>
 				<AuthTextField
-					autoComplete="tel"
+					as={PhoneInput}
+					// autoComplete="tel"
 					fieldName="phone"
 					form={form}
 					label="Phone"
-					maxLength={30}
-					placeholder="+254 712 345 678"
+					// maxLength={30}
+					placeholder="+712345678"
 					type="tel"
 				/>
 

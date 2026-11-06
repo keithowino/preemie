@@ -1,12 +1,10 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import {
-	Heading,
 	Loader,
 	MetaDataInsert,
 	platform,
 	Section,
 } from "../../../lib/index.js";
-import { Text } from "@/components/ui/typography/Text.jsx";
 import { Container } from "@/components/ui/Layouts/container/index.js";
 import { useIdentity } from "../../../platform/index.js";
 import {
@@ -85,26 +83,12 @@ const AuthLayout = () => {
 							<Outlet />
 						</CardContent>
 					</Card>
-					
+
 					<FieldDescription className="px-6 text-center">
 						By clicking continue, you agree to our{" "}
 						<a href="#">Terms of Service</a> and{" "}
 						<a href="#">Privacy Policy</a>.
 					</FieldDescription>
-
-					{/* <Text className="mt-6">
-						{isRegistering
-							? "Already have an account? "
-							: "Don't have an account yet? "}
-
-						<Link
-							to={isRegistering ? "/login" : "/register"}
-							state={{ from: location.state?.from }}
-							className="font-semibold text-graphite underline underline-offset-4"
-						>
-							{isRegistering ? "Log in" : "Create one"}
-						</Link>
-					</Text> */}
 				</Section>
 			</div>
 		</>

@@ -1,3 +1,28 @@
+export { HoldToSignOut } from "./HoldToSignOut.jsx";
+
+/**
+|--------------------------------------------------
+| Helpers
+|--------------------------------------------------
+*/
+
+export function displayName(user) {
+	const first = user?.firstName?.trim();
+	const last = user?.lastName?.trim();
+	if (first && last) return `${first} ${last}`;
+	return first || user?.email || "Account";
+}
+
+export function getInitials(user) {
+	const source = displayName(user);
+	return source
+		.split(/\s+/)
+		.slice(0, 2)
+		.map((part) => part[0] ?? "")
+		.join("")
+		.toUpperCase();
+}
+
 export function getErrorMessage(error, mode) {
 	if (error?.status === 400) {
 		return (

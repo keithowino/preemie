@@ -1,10 +1,12 @@
+// "use client";
+
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useIdentity } from "../../../platform/index.js";
 
 import FormError from "@/components/ui/custom/FormError.jsx";
-import { getDestination, getErrorMessage } from "../utils.js";
+import { getDestination, getErrorMessage } from "../utils/index.js";
 import { Button } from "@/components/ui/button.jsx";
 import {
 	Field,

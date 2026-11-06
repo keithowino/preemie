@@ -1,16 +1,23 @@
 import { useLayoutEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { platform } from "../../../lib/index.js";
-
 import { gsap } from "gsap";
+
+import { platform } from "../../../lib/index.js";
 import { useIdentity } from "../../../platform/index.js";
+
+import AccountMenu from "@/modules/identity/components/AccountMenu.jsx";
+import MobileNav from "@/modules/identity/components/MobileNav.jsx";
 
 const TAGLINE = ["Make.", "Test.", "Improve."];
 
-export default function AppHeader() {
-	const { isAuthenticated, user, logout } = useIdentity();
-	const navigate = useNavigate();
+const NAV_LINKS = [
+	{ to: "/community", label: "Community" },
+	{ to: "/museum", label: "Museum" },
+];
 
+export default function AppHeader() {
+	const { isAuthenticated, logout } = useIdentity();
+	const navigate = useNavigate();
 	const taglineRef = useRef(null);
 
 	useLayoutEffect(() => {
@@ -48,8 +55,10 @@ export default function AppHeader() {
 		try {
 			await logout();
 		} catch {
-			// IdentityProvider clears the local session even when
-			// the server-side logout request fails.
+			/**
+			 * IdentityProvider clears the local session even when
+			 * the server-side logout request fails.
+			 */
 		} finally {
 			navigate("/", { replace: true });
 		}
@@ -57,11 +66,12 @@ export default function AppHeader() {
 
 	return (
 		<header className="border-b border-border bg-background">
-			<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+			<div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 sm:px-6 lg:px-8">
+				{/* Brand */}
 				<Link
 					to="/"
 					aria-label="Preemie home"
-					className="inline-flex items-center gap-3 rounded-md"
+					className="inline-flex shrink-0 items-center gap-3 rounded-md"
 				>
 					<span
 						aria-hidden="true"
@@ -86,15 +96,33 @@ export default function AppHeader() {
 						<span className="font-heading text-xl font-extrabold leading-tight tracking-tight text-foreground">
 							{platform.name}
 						</span>
-						<span className="text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+						<span className="hidden text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:block">
 							Ideas from what you have
 						</span>
 					</span>
 				</Link>
 
+				{/* Desktop nav */}
+				<nav
+					aria-label="Primary"
+					className="hidden items-center gap-1 md:flex"
+				>
+					{NAV_LINKS.map((link) => (
+						<Link
+							key={link.to}
+							to={link.to}
+							className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+						>
+							{link.label}
+						</Link>
+					))}
+				</nav>
+
+				{/* Tagline — decorative, hidden once space is tight */}
 				<span
 					ref={taglineRef}
-					className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground sm:flex"
+					aria-hidden="true"
+					className="ml-auto hidden items-center gap-1.5 text-sm font-medium text-muted-foreground lg:flex"
 				>
 					{TAGLINE.map((word, i) => {
 						const isLast = i === TAGLINE.length - 1;
@@ -117,41 +145,35 @@ export default function AppHeader() {
 						);
 					})}
 				</span>
-				<div className="flex items-center gap-4">
+
+				{/* Account */}
+				<div className="ml-auto flex items-center gap-2 lg:ml-0">
 					{isAuthenticated ? (
-						<nav className="flex items-center gap-3 text-sm">
-							<Link
-								to="/account/settings/security"
-								className="font-medium text-foreground hover:underline"
-							>
-								{user.firstName
-									? `Hi, ${user.firstName}`
-									: "Sessions"}
-							</Link>
-							<button
-								type="button"
-								onClick={handleSignOut}
-								className="font-medium text-muted-foreground hover:text-foreground"
-							>
-								Sign out
-							</button>
-						</nav>
+						<AccountMenu onSignOut={handleSignOut} />
 					) : (
-						<nav className="flex items-center gap-3 text-sm">
+						<nav
+							aria-label="Account"
+							className="hidden items-center gap-2 md:flex"
+						>
 							<Link
 								to="/login"
-								className="font-medium text-foreground hover:underline"
+								className="rounded-md px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
 							>
 								Sign in
 							</Link>
 							<Link
 								to="/register"
-								className="rounded-md bg-primary px-3 py-1.5 font-semibold text-primary-foreground hover:bg-primary/85"
+								className="rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/85"
 							>
 								Create account
 							</Link>
 						</nav>
 					)}
+
+					{/* Mobile hamburger — always shown below md */}
+					<div className="md:hidden">
+						<MobileNav onSignOut={handleSignOut} />
+					</div>
 				</div>
 			</div>
 		</header>

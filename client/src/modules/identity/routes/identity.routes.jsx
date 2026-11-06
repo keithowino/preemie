@@ -1,5 +1,11 @@
 import { AuthLayout } from "../layouts/index.js";
-import { LoginPage, RegisterPage, SessionsPage } from "../pages/index.js";
+import {
+	AccountSettingsPage,
+	LoginPage,
+	ProfilePage,
+	RegisterPage,
+	SessionsPage,
+} from "../pages/index.js";
 
 export const publicIdentityRoutes = [
 	{
@@ -18,6 +24,14 @@ export const publicIdentityRoutes = [
 ];
 
 export const authenticatedIdentityRoutes = [
+	{
+		path: "/account/profile",
+		element: <ProfilePage />,
+	},
+	{
+		path: "/account/settings",
+		element: <AccountSettingsPage />,
+	},
 	{
 		path: "/account/settings/security",
 		element: <SessionsPage />,

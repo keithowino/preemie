@@ -2,6 +2,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field.jsx";
 import { Input } from "@/components/ui/input.jsx";
 
 export default function AuthTextField({
+	as: Component = Input,
 	autoComplete,
 	className,
 	fieldName,
@@ -30,7 +31,7 @@ export default function AuthTextField({
 							)}
 						</FieldLabel>
 
-						<Input
+						{/* <Input
 							id={`auth-${field.name}`}
 							name={field.name}
 							value={field.state.value}
@@ -44,6 +45,55 @@ export default function AuthTextField({
 							onChange={(event) =>
 								field.handleChange(event.target.value)
 							}
+							aria-invalid={isInvalid}
+							{...inputProps}
+						/> */}
+
+						{/* <Component
+							id={`auth-${field.name}`}
+							name={field.name}
+							value={field.state.value}
+							type={type}
+							placeholder={placeholder}
+							autoComplete={autoComplete}
+							required={required}
+							minLength={minLength}
+							maxLength={maxLength}
+							onBlur={field.handleBlur}
+							onChange={(event) =>
+								field.handleChange(event.target.value)
+							}
+							aria-invalid={isInvalid}
+							{...inputProps}
+						/> */}
+
+						<Component
+							id={`auth-${field.name}`}
+							name={field.name}
+							value={field.state.value}
+							type={type}
+							placeholder={placeholder}
+							autoComplete={autoComplete}
+							required={required}
+							minLength={minLength}
+							maxLength={maxLength}
+							onBlur={field.handleBlur}
+							/** Research what eventOrValue is */
+							onChange={(eventOrValue) => {
+								/**
+								 * Standard inputs emit an event; value-first components (like
+								 * the phone input) emit the value itself. Accept both so that
+								 * `as={PhoneInput}` and `as={Input}` share one wrapper.
+								 */
+								const nextValue =
+									eventOrValue &&
+									typeof eventOrValue === "object" &&
+									"target" in eventOrValue
+										? eventOrValue.target.value
+										: (eventOrValue ?? "");
+
+								field.handleChange(nextValue);
+							}}
 							aria-invalid={isInvalid}
 							{...inputProps}
 						/>

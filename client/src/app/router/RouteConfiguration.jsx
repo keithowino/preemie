@@ -6,6 +6,7 @@ import {
 	publicIdentityRoutes,
 } from "../../modules/index.js";
 import { AuthenticatedRoute, PublicOnlyRoute } from "../../platform/index.js";
+import { labRoutes } from "@/modules/administration/index.js";
 
 /**
  * React Query will manage asynchronous query states,
@@ -28,7 +29,11 @@ function ApplicationRoutes() {
 
 		{
 			element: <AuthenticatedRoute />,
-			children: [...ideationRoutes, ...authenticatedIdentityRoutes],
+			children: [
+				...ideationRoutes,
+				...authenticatedIdentityRoutes,
+				...labRoutes,
+			],
 		},
 		{
 			path: "*",

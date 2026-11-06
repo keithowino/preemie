@@ -1,3 +1,5 @@
+// "use client";
+
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { Link, useNavigate } from "react-router-dom";
