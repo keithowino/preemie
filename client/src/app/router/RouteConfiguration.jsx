@@ -20,25 +20,51 @@ import { labRoutes } from "@/modules/administration/index.js";
  */
 
 function ApplicationRoutes() {
-	return useRoutes([
-		...gatewayRoutes,
-		{
-			element: <PublicOnlyRoute />,
-			children: publicIdentityRoutes,
-		},
+	// return useRoutes([
+	// 	...gatewayRoutes,
+	// 	{
+	// 		element: <PublicOnlyRoute />,
+	// 		children: publicIdentityRoutes,
+	// 	},
 
+	// 	{
+	// 		element: <AuthenticatedRoute />,
+	// 		children: [
+	// 			...ideationRoutes,
+	// 			...authenticatedIdentityRoutes,
+	// 			...labRoutes, // Dev testing interface
+	// 		],
+	// 	},
+	// 	{
+	// 		path: "*",
+	// 		element: <Navigate to="/" replace />,
+	// 	},
+	// ]);
+
+	return useRoutes([
+		{
+			element: <MarketingLayout />,
+			children: [...gatewayRoutes /*, community, museum */],
+		},
+		{ element: <PublicOnlyRoute />, children: publicIdentityRoutes },
 		{
 			element: <AuthenticatedRoute />,
 			children: [
-				...ideationRoutes,
-				...authenticatedIdentityRoutes,
-				...labRoutes,
+				{
+					element: <WorkspaceLayout />,
+					children: [
+						...ideationRoutes,
+						{
+							path: "/account",
+							element: <AccountLayout />,
+							children: accountRoutes,
+						},
+						...labRoutes,
+					],
+				},
 			],
 		},
-		{
-			path: "*",
-			element: <Navigate to="/" replace />,
-		},
+		{ path: "*", element: <Navigate to="/" replace /> },
 	]);
 }
 

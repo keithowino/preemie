@@ -1,0 +1,11 @@
+{
+	"recommendations": [
+		"pharndt.vscode-markdown-table",
+		"jurajstefanic.better-markdown-tables",
+		"devzstudio.emoji-snippets",
+		"chrischinchilla.vscode-pandoc",
+		"ahmedyoussef.pandoc-vscode",
+		"yzhang.markdown-all-in-one",
+		"hancel.markdown-image"
+	]
+}

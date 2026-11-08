@@ -6,10 +6,11 @@ import AppShell from "@/components/ui/Layouts/AppShell.jsx";
 export function AppRouter() {
 	return (
 		<BrowserRouter>
-			<ScrollToTop />
+			{/* <ScrollToTop />
 			<AppShell>
 				<RouterConfiguration />
-			</AppShell>
+			</AppShell> */}
+			<RouterConfiguration />
 		</BrowserRouter>
 	);
 }

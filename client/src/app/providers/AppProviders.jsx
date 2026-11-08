@@ -95,7 +95,7 @@ const queryClient = new QueryClient({
 */
 export function AppProviders({ children }) {
 	return (
-		<ThemeProvider defaultTheme="dark" storageKey="preemie-ui-theme">
+		<ThemeProvider>
 			<NotificationProvider>
 				<IdentityProvider>
 					<QueryClientProvider client={queryClient}>

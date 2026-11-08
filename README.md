@@ -14,39 +14,74 @@ The product is designed to move beyond a chatbot that lists project ideas. It ai
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Vision](#vision)
-- [Core Experiences](#core-experiences)
+- [PREEMIE](#preemie)
+    - [Table of Contents](#table-of-contents)
+    - [Overview](#overview)
+    - [Vision](#vision)
+    - [Core Experiences](#core-experiences)
+        - [1. Describe what you have](#1-describe-what-you-have)
+        - [2. Explore three alternatives](#2-explore-three-alternatives)
+        - [3. Compare before choosing](#3-compare-before-choosing)
+        - [4. Develop a selected concept](#4-develop-a-selected-concept)
+        - [5. Learn about unfamiliar materials](#5-learn-about-unfamiliar-materials)
 - [Development and Deployment](#development-and-deployment)
     - [Development Principles](#development-principles)
     - [Current Features](#current-features)
+        - [Client](#client)
+        - [Server](#server)
     - [Planned Features](#planned-features)
-        - [Identity and Authorization](#1-identity-and-authorization)
-        - [Administration](#2-administration)
-        - [References and Learning Resources](#3-references-and-learning-resources)
-        - [Media and Visual Understanding](#4-media-and-visual-understanding)
-        - [Resource Savings and Generation History](#5-resource-savings-and-generation-history)
-        - [Preferences and Personalization](#6-preferences-and-personalization)
-        - [SEO and Public Pages](#7-seo-and-public-pages)
+        - [1. Identity and Authorization](#1-identity-and-authorization)
+        - [2. Administration](#2-administration)
+        - [3. References and Learning Resources](#3-references-and-learning-resources)
+        - [4. Media and Visual Understanding](#4-media-and-visual-understanding)
+        - [5. Resource Savings and Generation History](#5-resource-savings-and-generation-history)
+        - [6. Preferences and Personalization](#6-preferences-and-personalization)
+        - [7. SEO and Public Pages](#7-seo-and-public-pages)
     - [Phase-Based Roadmap](#phase-based-roadmap)
-- [Technology Stack](#technology-stack)
-- [Architecture and Project Structure](#architecture-and-project-structure)
+        - [Phase 1 — Project foundation](#phase-1--project-foundation)
+        - [Phase 2 — Ideation contract and generation](#phase-2--ideation-contract-and-generation)
+        - [Phase 3 — Persistence and retrieval](#phase-3--persistence-and-retrieval)
+        - [Phase 4 — API hardening](#phase-4--api-hardening)
+        - [Phase 5 — Ideas comparison page _(partially complete)_](#phase-5--ideas-comparison-page-partially-complete)
+        - [Phase 6 — Project workspace _(not yet implemented)_](#phase-6--project-workspace-not-yet-implemented)
+        - [Phase 7 — Integration testing and responsive refinement _(remaining work)_](#phase-7--integration-testing-and-responsive-refinement-remaining-work)
+        - [Phase 8 — Documentation and release readiness _(in progress)_](#phase-8--documentation-and-release-readiness-in-progress)
+        - [Phase 9 — Identity domain integration _(backend implemented; client integration pending)_](#phase-9--identity-domain-integration-backend-implemented-client-integration-pending)
+        - [Phase 10 — References, media, and resource savings _(planned)_](#phase-10--references-media-and-resource-savings-planned)
+        - [Phase 11 — SEO and administration _(planned)_](#phase-11--seo-and-administration-planned)
+    - [Technology Stack](#technology-stack)
+        - [Client](#client-1)
+        - [Server](#server-1)
+    - [Architecture and Project Structure](#architecture-and-project-structure)
 - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Forking and Cloning](#forking-and-cloning)
     - [Environment Configuration](#environment-configuration)
+        - [Server environment](#server-environment)
+        - [Client environment](#client-environment)
+        - [Environment files](#environment-files)
     - [Installing Dependencies](#installing-dependencies)
     - [Running Locally](#running-locally)
     - [Useful Commands](#useful-commands)
-- [API Reference](#api-reference)
-- [Testing and Quality Checks](#testing-and-quality-checks)
-- [Deployment](#deployment)
-- [Known Limitations and Security Notes](#known-limitations-and-security-notes)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
-- [Support the Project](#support-the-project)
+    - [API Reference](#api-reference)
+        - [Health](#health)
+        - [Ideations](#ideations)
+        - [Authentication](#authentication)
+    - [Testing and Quality Checks](#testing-and-quality-checks)
+        - [Automated tests](#automated-tests)
+        - [REST verification](#rest-verification)
+        - [Client quality checks](#client-quality-checks)
+    - [Deployment](#deployment)
+        - [Client — Vercel](#client--vercel)
+        - [Server — Node.js host](#server--nodejs-host)
+        - [Database — MongoDB](#database--mongodb)
+        - [Release checks](#release-checks)
+    - [Known Limitations and Security Notes](#known-limitations-and-security-notes)
+    - [Contributing](#contributing)
+    - [License](#license)
+    - [Acknowledgments](#acknowledgments)
+    - [Contact](#contact)
+    - [Support the Project](#support-the-project)
 
 ---
 
@@ -795,9 +830,12 @@ This repository is public for review and reference. No permission is granted to 
 
 ## Acknowledgments
 
-- **ChatGPT** — primary LLM assistance for development guidance, architecture discussions, and debugging.
-- **DeepSeek** — secondary LLM assistance for extended reasoning and consistency checks.
-- **Bolt.new** — a potential tool for accelerated prototyping and experimentation.
+- Primary:
+    - **ChatGPT** — LLM assistance for development guidance, architecture discussions, and debugging.
+    - **DeepSeek** — LLM assistance for extended reasoning and consistency checks.
+- Secondary:
+    - **Cloude** — LLM assistance for occasional design architectural reasoning.
+    - **Bolt.new** — a potential tool for accelerated prototyping and experimentation.
 - **Render and Vercel** — hosting platforms considered or used across development and deployment workflows.
 - **Google Gemini** — the AI model provider currently integrated for ideation generation.
 - **Open-source community** — the maintainers and contributors behind the libraries and tools that make this project possible.

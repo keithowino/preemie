@@ -21,7 +21,7 @@ function readStoredTheme(storageKey, defaultTheme) {
 
 export function ThemeProvider({
 	children,
-	defaultTheme = "system",
+	defaultTheme = "dark",
 	storageKey = "preemie-ui-theme",
 	...props
 }) {
