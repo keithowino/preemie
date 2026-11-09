@@ -1,5 +1,18 @@
 import { randomUUID } from "node:crypto";
 
+function withoutOwner(record) {
+	if (!record) {
+		return record;
+	}
+
+	const document =
+		typeof record.toObject === "function" ? record.toObject() : record;
+
+	const { owner, ...publicRecord } = document;
+
+	return publicRecord;
+}
+
 export function createIdeationService({ provider, repository }) {
 	if (typeof provider?.generateIdeation !== "function") {
 		throw new TypeError("A compatible ideation provider is required.");
@@ -7,33 +20,67 @@ export function createIdeationService({ provider, repository }) {
 
 	if (
 		typeof repository?.create !== "function" ||
-		typeof repository?.findByGenerationId !== "function"
+		typeof repository?.findByGenerationId !== "function" ||
+		typeof repository?.findGenerations !== "function" ||
+		typeof repository?.deleteByGenerationId !== "function"
 	) {
 		throw new TypeError("A compatible ideation repository is required.");
 	}
 
 	return {
-		async create(input) {
+		async create(input, ownerId) {
 			const generation = await provider.generateIdeation(input);
 
-			const record = await repository.create({
-				generationId: randomUUID(),
-				input: {
-					materials: input.materials,
-					constraints: input.constraints ?? {},
+			const record = await repository.create(
+				{
+					generationId: randomUUID(),
+
+					input: {
+						materials: input.materials,
+						constraints: input.constraints ?? {},
+					},
+
+					concepts: generation.concepts,
 				},
-				concepts: generation.concepts,
+				ownerId,
+			);
+
+			return withoutOwner(record);
+		},
+
+		async getByGenerationId(generationId, ownerId) {
+			const record = await repository.findByGenerationId(
+				generationId,
+				ownerId,
+			);
+
+			return withoutOwner(record);
+		},
+
+		async list(ownerId, { page, limit }) {
+			const result = await repository.findGenerations(ownerId, {
+				page,
+				limit,
 			});
 
-			return record;
+			const totalPages = Math.ceil(result.total / limit);
+
+			return {
+				items: result.items.map(withoutOwner),
+
+				pagination: {
+					page,
+					limit,
+					total: result.total,
+					totalPages,
+					hasNextPage: page < totalPages,
+					hasPreviousPage: page > 1,
+				},
+			};
 		},
 
-		async getByGenerationId(generationId) {
-			return repository.findByGenerationId(generationId);
-		},
-
-		async list(payload) {
-			return repository.findGenerations(payload);
+		async deleteByGenerationId(generationId, ownerId) {
+			return repository.deleteByGenerationId(generationId, ownerId);
 		},
 	};
 }

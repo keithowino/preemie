@@ -254,6 +254,12 @@ const conceptSchema = new Schema(
 
 const ideationSchema = new Schema(
 	{
+		owner: {
+			type: Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+			immutable: true,
+		},
 		generationId: {
 			type: String,
 			required: true,
@@ -298,6 +304,7 @@ const ideationSchema = new Schema(
 );
 
 ideationSchema.index({ generationId: 1 }, { unique: true });
+ideationSchema.index({ owner: 1, createdAt: -1 });
 
 const Ideation = models.Ideation || model("Ideation", ideationSchema);
 

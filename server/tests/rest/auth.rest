@@ -28,9 +28,14 @@ Content-Type: application/json
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
+# {
+#     "email": "{{email}}",
+#     "password": "{{password}}"
+# }
+
 {
-    "email": "{{email}}",
-    "password": "{{password}}"
+    "email": "rembo1234@gmail.com",
+    "password": "rembo@1234"
 }
 
 ### Logout ("refreshToken": "{{refreshToken}}")

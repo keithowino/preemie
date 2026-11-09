@@ -1,9 +1,13 @@
 @baseUrl = http://localhost:5000/api/v1
-@generationId = GENERATION_ID
+
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWUwZDk1OGI0MmVhNzI5Yzk0NDA3OGUiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFmMWY0M2ZiMzdlOTZkZjBkMDQyZTI3IiwiaWF0IjoxNzk0MjQxNTk5LCJleHAiOjE3OTQzMjc5OTksImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.qmHoBZMNXlJ-8pz9g1r1KT_g3uM0sgqRnJBoVxT22Mw
+
+@generationId = aec23b83-fa94-40e9-91de-06643300fbf4
 
 ### create and persist an ideation
 
 POST {{baseUrl}}/ideations
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 Accept: application/json
 
@@ -54,11 +58,31 @@ Accept: application/json
 ### Retrieve generation
 
 GET {{baseUrl}}/ideations/{{generationId}}
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ### Retrieve generations
 
 GET {{baseUrl}}/ideations
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+
+GET {{baseUrl}}/ideations?page=1&limit=10
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Test pagination validation
+
+GET {{baseUrl}}/ideations?page=0
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Invalid page size
+
+GET {{baseUrl}}/ideations?limit=101
+Authorization: Bearer {{accessToken}}
 Accept: application/json
 
 ### Validate rejection of an invalid request body
@@ -108,4 +132,10 @@ Accept: application/json
 # Exceeds the shared retrieval limit of two requests per minute.
 
 GET {{baseUrl}}/ideations
+Accept: application/json
+
+### Delete generation
+
+DELETE {{baseUrl}}/ideations/{{generationId}}
+Authorization: Bearer {{accessToken}}
 Accept: application/json

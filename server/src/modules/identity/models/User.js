@@ -1,6 +1,48 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+/**
+ * A useful detail about this structure: _id: false
+ * prevents Mongoose from generating unnecessary
+ * MongoDB identifiers for these embedded preference
+ * objects. They are settings, not independently
+ * addressable documents.
+ *
+ * models.User || model("User", userSchema) were used,
+ * consistent with the approach already used by the
+ * Ideation model. This avoids model recompilation
+ * problems in environments where modules may be reloaded.
+ */
+
+const { Schema, model, models } = mongoose;
+
+const appearancePreferencesSchema = new Schema(
+	{
+		theme: {
+			type: String,
+			enum: ["system", "light", "dark"],
+			default: "system",
+		},
+	},
+	{
+		_id: false,
+		strict: true,
+	},
+);
+
+const preferencesSchema = new Schema(
+	{
+		appearance: {
+			type: appearancePreferencesSchema,
+			default: () => ({}),
+		},
+	},
+	{
+		_id: false,
+		strict: true,
+	},
+);
+
+const userSchema = new Schema(
 	{
 		firstName: {
 			type: String,
@@ -37,6 +79,11 @@ const userSchema = new mongoose.Schema(
 			publicId: String,
 		},
 
+		preferences: {
+			type: preferencesSchema,
+			default: () => ({}),
+		},
+
 		emailVerified: {
 			type: Boolean,
 			default: false,
@@ -49,9 +96,10 @@ const userSchema = new mongoose.Schema(
 	},
 	{
 		timestamps: true,
+		strict: true,
 	},
 );
 
-const User = mongoose.model("User", userSchema);
+const User = models.User || model("User", userSchema);
 
 export default User;

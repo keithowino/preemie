@@ -11,10 +11,17 @@ class UserPresenter {
 			firstName: user.firstName,
 			lastName: user.lastName,
 			email: user.email,
+
 			avatar:
 				user.avatar && Object.keys(user.avatar).length > 0
 					? user.avatar
 					: null,
+
+			preferences: {
+				appearance: {
+					theme: user.preferences?.appearance?.theme ?? "system",
+				},
+			},
 		};
 	}
 

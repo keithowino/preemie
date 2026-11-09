@@ -10,6 +10,7 @@ import {
 import {
 	createIdeationBodySchema,
 	generationIdParamSchema,
+	listIdeationsQuerySchema,
 } from "../validators/index.js";
 
 /**
@@ -19,7 +20,9 @@ import {
 export function createIdeationController({ ideationService }) {
 	if (
 		typeof ideationService?.create !== "function" ||
-		typeof ideationService?.getByGenerationId !== "function"
+		typeof ideationService?.getByGenerationId !== "function" ||
+		typeof ideationService?.list !== "function" ||
+		typeof ideationService?.deleteByGenerationId !== "function"
 	) {
 		throw new TypeError("A compatible ideation service is required.");
 	}
@@ -30,7 +33,7 @@ export function createIdeationController({ ideationService }) {
 			req,
 		);
 
-		const generation = await ideationService.create(body);
+		const generation = await ideationService.create(body, req.user._id);
 
 		return success(
 			res,
@@ -48,6 +51,7 @@ export function createIdeationController({ ideationService }) {
 
 		const generation = await ideationService.getByGenerationId(
 			params.generationId,
+			req.user._id,
 		);
 
 		if (!generation) {
@@ -62,25 +66,42 @@ export function createIdeationController({ ideationService }) {
 	});
 
 	const list = asyncHandler(async (req, res) => {
-		/**
-		 * listIdeationBodySchema validation is yet to be configured
-		 */
+		const { query } = validateRequest(
+			{ query: listIdeationsQuerySchema },
+			req,
+		);
 
-		// const { query } = validateRequest(
-		// 	{
-		// 		query: listIdeationBodySchema,
-		// 	},
-		// 	req,
-		// );
+		const result = await ideationService.list(req.user._id, query);
 
-		const generations = await ideationService.list(req.query);
+		return success(res, result, "Ideations retrieved successfully.");
+	});
 
-		return success(res, generations, "Ideations retrieved successfully.");
+	const remove = asyncHandler(async (req, res) => {
+		const { params } = validateRequest(
+			{ params: generationIdParamSchema },
+			req,
+		);
+
+		const deleted = await ideationService.deleteByGenerationId(
+			params.generationId,
+			req.user._id,
+		);
+
+		if (!deleted) {
+			throw new AppError(
+				"Ideation generation not found.",
+				HTTP_STATUS.NOT_FOUND,
+				ErrorCodes.NOT_FOUND,
+			);
+		}
+
+		return success(res, null, "Ideation deleted successfully.");
 	});
 
 	return {
 		create,
 		getByGenerationId,
 		list,
+		remove,
 	};
 }

@@ -127,7 +127,7 @@ ideation.routes.js currently registers creation, listing and retrieval without a
 
 We must secure the backend independently.
 
-### Stage 1 — Ownership architecture and data modelling
+### Stage 1 — Ownership architecture and data modelling (covered)
 
 - Introduce ownership into the Ideation model.
 - Establish ownership rules for existing and future generations.
@@ -135,7 +135,7 @@ We must secure the backend independently.
 - Identify which resources belong to the user.
 - Define authorization and resource-access policies.
 
-### Stage 2 — Backend ideation ownership
+### Stage 2 — Backend ideation ownership (covered)
 
 - Require authentication when creating ideations.
 - Associate every new ideation with req.user.\_id.

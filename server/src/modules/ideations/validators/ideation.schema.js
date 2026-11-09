@@ -1,16 +1,20 @@
 import { z } from "zod";
 
-// -----------------------------------------------------------------------------
-// Shared primitives
-// -----------------------------------------------------------------------------
+/**
+|--------------------------------------------------
+| Shared primitives
+|--------------------------------------------------
+*/
 
 const nonEmptyText = z.string().trim().min(1).max(500);
 
 const textList = z.array(z.string().trim().min(1).max(1000)).max(20);
 
-// -----------------------------------------------------------------------------
-// User input
-// -----------------------------------------------------------------------------
+/**
+|--------------------------------------------------
+| User input
+|--------------------------------------------------
+*/
 
 export const ideationMaterialSchema = z.object({
 	name: nonEmptyText,
@@ -45,9 +49,11 @@ export const createIdeationBodySchema = z
 	})
 	.strict();
 
-// -----------------------------------------------------------------------------
-// Generated concept
-// -----------------------------------------------------------------------------
+/**
+|--------------------------------------------------
+| Generated concept
+|--------------------------------------------------
+*/
 
 export const conceptTypeSchema = z.enum([
 	"REPURPOSE",
@@ -108,18 +114,22 @@ export const ideationConceptSchema = z.object({
 	}),
 
 	/**
-	 * Explain the scientific or engineering ideas behind
-	 * the concept.
-	 */
+	|--------------------------------------------------
+	| Explain the scientific or engineering ideas behind 
+	| the concept.
+	|--------------------------------------------------
+	*/
 	scientificPrinciples: z
 		.array(z.string().trim().min(1).max(1000))
 		.min(1)
 		.max(10),
 
 	/**
-	 * Record constraints, assumptions, and anything not
-	 * yet verified.
-	 */
+	|--------------------------------------------------
+	| Record constraints, assumptions, and anything 
+	| not yet verified.
+	|--------------------------------------------------
+	*/
 	limitations: z.array(z.string().trim().min(1).max(1000)).min(1).max(20),
 
 	assumptions: textList,
@@ -129,10 +139,11 @@ export const ideationConceptSchema = z.object({
 	tests: textList,
 });
 
-// -----------------------------------------------------------------------------
-// Complete generation output
-// -----------------------------------------------------------------------------
-
+/**
+|--------------------------------------------------
+| Complete generation output
+|--------------------------------------------------
+*/
 export const ideationGenerationOutputSchema = z
 	.object({
 		concepts: z
@@ -149,10 +160,24 @@ export const ideationGenerationOutputSchema = z
 	})
 	.strict();
 
-// -----------------------------------------------------------------------------
-// Retrieval parameters
-// -----------------------------------------------------------------------------
-
+/**
+|--------------------------------------------------
+| Retrieval parameters
+|--------------------------------------------------
+*/
 export const generationIdParamSchema = z.object({
 	generationId: z.uuid(),
 });
+
+/**
+|--------------------------------------------------
+| Ideation listing parameters
+|--------------------------------------------------
+*/
+export const listIdeationsQuerySchema = z
+	.object({
+		page: z.coerce.number().int().min(1).default(1),
+
+		limit: z.coerce.number().int().min(1).max(100).default(10),
+	})
+	.strict();

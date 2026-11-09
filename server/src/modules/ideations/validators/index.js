@@ -5,4 +5,5 @@ export {
 	ideationConceptSchema,
 	ideationGenerationOutputSchema,
 	ideationMaterialSchema,
+	listIdeationsQuerySchema,
 } from "./ideation.schema.js";
