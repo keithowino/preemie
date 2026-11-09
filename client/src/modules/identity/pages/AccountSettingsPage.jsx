@@ -1,21 +1,16 @@
-import { Container } from "@/components/ui/Layouts/container";
-import { Heading, MetaDataInsert, Section } from "@/lib";
-import { Link } from "react-router-dom";
+import { Heading, MetaDataInsert, Section } from "@/lib/index.js";
+import { Text } from "@/components/ui/typography/Text.jsx";
 
-const AccountSettingsPage = () => {
+export default function AccountSettingsPage() {
 	return (
 		<>
 			<MetaDataInsert title="Account Settings" />
-			<Container>
-				<Section>
-					<Heading>AccountSettingsPage</Heading>
-					<Link to="/account/settings/security" className="underline">
-						Security
-					</Link>
-				</Section>
-			</Container>
+			<Section>
+				<Heading level={3}>Settings</Heading>
+				<Text className="mt-2">
+					Preferences such as theme and notifications will live here.
+				</Text>
+			</Section>
 		</>
 	);
-};
-
-export default AccountSettingsPage;
+}

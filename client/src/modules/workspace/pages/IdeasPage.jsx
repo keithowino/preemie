@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { getIdeation } from "../services/index.js";
 import {
@@ -7,10 +7,10 @@ import {
 	Loader,
 	MetaDataInsert,
 	Section,
-	platform,
 } from "../../../lib/index.js";
 import { Text } from "@/components/ui/typography/Text.jsx";
 import { Container } from "@/components/ui/Layouts/container/index.js";
+import { Button } from "@/components/ui/button.jsx";
 
 const UUID_PATTERN =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -29,7 +29,7 @@ function MaterialsList({ title, materials }) {
 			<h4 className="font-semibold">{title}</h4>
 
 			{materials.length === 0 ? (
-				<Text className="mt-2 text-sm text-muted">None specified.</Text>
+				<Text className="mt-2">None specified.</Text>
 			) : (
 				<ul className="mt-2 space-y-2">
 					{materials.map((material, index) => (
@@ -59,9 +59,12 @@ function ConceptCard({ concept, index }) {
 	);
 
 	return (
-		<article className="rounded-card border border-border bg-white p-5 sm:p-6">
+		<article className="rounded-card border border-border bg-card text-card-foreground p-5 sm:p-6">
 			<div className="flex flex-wrap items-center justify-between gap-3">
-				<Text className="text-sm font-semibold uppercase tracking-wider text-muted">
+				<Text
+					className="font-semibold uppercase tracking-wider"
+					size="text-sm"
+				>
 					Concept {String(index + 1).padStart(2, "0")}
 				</Text>
 
@@ -78,20 +81,23 @@ function ConceptCard({ concept, index }) {
 
 			{concept.rationale && (
 				<div className="mt-5">
-					<h3 className="font-semibold">Why this could work</h3>
-					<Text className="mt-1 text-sm">{concept.rationale}</Text>
+					<Heading level={3}>Why this could work</Heading>
+					<Text className="mt-1">{concept.rationale}</Text>
 				</div>
 			)}
 
 			<div className="mt-5 grid gap-3 sm:grid-cols-2">
 				<div className="rounded-control bg-canvas p-3">
-					<Text className="text-xs font-semibold uppercase tracking-wider text-muted">
+					<Text
+						className="font-semibold uppercase tracking-wider"
+						size="text-xs"
+					>
 						Feasibility
 					</Text>
 					<Text className="mt-1 font-semibold">
 						{formatLabel(concept.feasibility.level)}
 					</Text>
-					<Text className="mt-1 text-sm">
+					<Text className="mt-1">
 						{concept.feasibility.rationale}
 					</Text>
 				</div>
@@ -119,9 +125,9 @@ function ConceptCard({ concept, index }) {
 			</div>
 
 			<div className="mt-6 border-t border-border pt-5">
-				<h3 className="font-semibold">Build plan</h3>
+				<Heading level={3}>Build plan</Heading>
 
-				<Text className="mt-2 text-sm">
+				<Text className="mt-2">
 					<span className="font-medium">Tools:</span>{" "}
 					{concept.buildPlan.tools.join(", ")}
 				</Text>
@@ -132,10 +138,10 @@ function ConceptCard({ concept, index }) {
 						.sort((a, b) => a.order - b.order)
 						.map((step) => (
 							<li key={step.order}>
-								<p className="font-medium">{step.title}</p>
-								<p className="mt-1 text-sm text-muted">
-									{step.description}
-								</p>
+								<Text className="font-medium">
+									{step.title}
+								</Text>
+								<Text className="mt-1">{step.description}</Text>
 							</li>
 						))}
 				</ol>
@@ -143,7 +149,9 @@ function ConceptCard({ concept, index }) {
 
 			{concept.scientificPrinciples?.length > 0 && (
 				<div className="mt-6">
-					<h3 className="font-semibold">Scientific principles</h3>
+					<Heading className="font-semibold">
+						Scientific principles
+					</Heading>
 					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
 						{concept.scientificPrinciples.map((principle) => (
 							<li key={principle}>{principle}</li>
@@ -154,7 +162,7 @@ function ConceptCard({ concept, index }) {
 
 			{concept.limitations?.length > 0 && (
 				<div className="mt-6">
-					<h3 className="font-semibold">Limitations</h3>
+					<Heading className="font-semibold">Limitations</Heading>
 					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
 						{concept.limitations.map((limitation) => (
 							<li key={limitation}>{limitation}</li>
@@ -164,7 +172,7 @@ function ConceptCard({ concept, index }) {
 			)}
 
 			{concept.safetyWarnings?.length > 0 && (
-				<div className="mt-6 rounded-control border border-amber-200 bg-amber-50 p-4">
+				<div className="mt-6 rounded-sm border border-primary bg-sage p-4">
 					<h3 className="font-semibold">Safety considerations</h3>
 					<ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
 						{concept.safetyWarnings.map((warning) => (
@@ -250,14 +258,7 @@ export default function IdeasPage() {
 
 			<Container>
 				<Section className="mt-8">
-					<Link
-						to="/"
-						className="inline-flex font-semibold text-graphite underline underline-offset-4"
-					>
-						← Back to the idea form
-					</Link>
-
-					<Heading level={1} className="mt-6">
+					<Heading level={2} className="mt-6">
 						Your ideas
 					</Heading>
 
@@ -278,7 +279,7 @@ export default function IdeasPage() {
 
 				{!isLoading && error && (
 					<Section
-						className="mt-8 rounded-card border border-border bg-white p-6"
+						className="mt-8 rounded-xl border border-border bg-card text-card-foreground p-6"
 						aria-live="polite"
 					>
 						<Heading level={2} className="text-xl">
@@ -292,31 +293,22 @@ export default function IdeasPage() {
 						<Text className="mt-3">{error.message}</Text>
 
 						{error.type === "general" && (
-							<button
+							<Button
 								type="button"
+								variant="secondary"
 								onClick={() =>
 									setRetryCount((count) => count + 1)
 								}
-								className="mt-5 rounded-control bg-graphite px-4 py-2 font-semibold text-white"
 							>
 								Try again
-							</button>
+							</Button>
 						)}
-
-						<div className="mt-4">
-							<Link
-								to="/"
-								className="font-semibold underline underline-offset-4"
-							>
-								Return to the idea form
-							</Link>
-						</div>
 					</Section>
 				)}
 
 				{!isLoading && ideation && (
 					<>
-						<Section className="mt-8 rounded-card border border-border bg-white p-5 sm:p-6">
+						<Section className="mt-8 rounded-card border border-border bg-card text-card-foreground p-5 sm:p-6">
 							<Heading level={2} className="text-xl">
 								Your starting point
 							</Heading>
@@ -359,7 +351,7 @@ export default function IdeasPage() {
 												<dt className="text-sm font-semibold">
 													{formatLabel(key)}
 												</dt>
-												<dd className="text-sm text-muted">
+												<dd className="text-sm text-muted-foreground">
 													{formatLabel(String(value))}
 												</dd>
 											</div>

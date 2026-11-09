@@ -1,19 +1,16 @@
 import { Button } from "@/components/ui/button.jsx";
-import { FeatureGrid } from "./layouts/index.js";
-import { Heading, Section } from "./ui/index.js";
 import { Text } from "@/components/ui/typography/Text.jsx";
+import { FeatureGrid, Heading, Section } from "@/lib/index.js";
 
 /**
  * Attributes: actions={[{ label: "", action: loadSessions, variant: "" }]}
  */
 const EmptyState = ({ label = "No data available.", description, actions }) => {
 	return (
-		<Section className="rounded-2xl border border-border bg-white p-6 text-center">
+		<Section className="rounded-2xl border border-border bg-card text-card-foreground p-6 text-center">
 			<Heading level={3}>{label}</Heading>
 
-			{description && (
-				<Text className="mt-2 text-gray-600">{description}</Text>
-			)}
+			{description && <Text className="mt-2">{description}</Text>}
 
 			{actions && (
 				<FeatureGrid>

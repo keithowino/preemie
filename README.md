@@ -381,10 +381,10 @@ The workspace can derive its concept from the retrieved parent generation; a sep
 - [x] Session listing and individual/other-session revocation endpoints.
 - [x] Access-token middleware with server-side session validation.
 - [x] Password hashing and hashed refresh-token storage.
-- [ ] Client authentication provider composed into `AppProviders`.
-- [ ] Login and registration screens.
-- [ ] Session lifecycle and protected-route behavior.
-- [ ] Session-management UI.
+- [x] Client authentication provider composed into `AppProviders`.
+- [x] Login and registration screens.
+- [x] Session lifecycle and protected-route behavior.
+- [x] Session-management UI.
 - [ ] Ownership enforcement for generations and workspace data.
 - [ ] Password recovery flow after the email/reset-token workflow is enabled.
 - [ ] Tests for authenticated and unauthorized access to owned resources.

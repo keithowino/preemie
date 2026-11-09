@@ -119,4 +119,140 @@ z.string().refine(
 
 That's stronger validation — it catches "+441" — but it depends on a library that has its own opinions about what's valid, and it returns true/false without telling you why a number failed, so the error message stays generic.
 
+## Phase 9: Ownership enforcement roadmap
+
+One particular issue with the existing routing deserves attention.
+
+ideation.routes.js currently registers creation, listing and retrieval without authentication middleware. Although the frontend workspace routes are protected, that does not protect the backend API.
+
+We must secure the backend independently.
+
+### Stage 1 — Ownership architecture and data modelling
+
+- Introduce ownership into the Ideation model.
+- Establish ownership rules for existing and future generations.
+- Define the account preferences structure.
+- Identify which resources belong to the user.
+- Define authorization and resource-access policies.
+
+### Stage 2 — Backend ideation ownership
+
+- Require authentication when creating ideations.
+- Associate every new ideation with req.user.\_id.
+- Restrict retrieval to the owner.
+- Implement authenticated listing with pagination.
+- Implement deletion of owned ideations.
+- Prevent users from accessing another user's generations.
+
+### Stage 3 — Backend account preferences
+
+- Introduce persistent application preferences.
+- Move theme preference from local-only state into the account.
+    - When the user changes the theme, the application should:
+        1. Update the UI immediately.
+        2. Persist the preference through the backend.
+        3. Restore that preference when the user signs in again or opens another session.
+
+        We should also consider what happens when the user changes their theme on one device while another session is active.
+
+- Introduce persistent presence/status.
+  The status should be persisted against the user account.
+
+    We should distinguish manually selected status from actual session activity. For example, a user selecting offline should not necessarily invalidate or terminate their active sessions.
+
+    There is also an architectural consideration: presence across multiple devices is different from presence stored on a single user document. We can begin with account-level status and introduce real-time presence tracking only when necessary
+
+- Implement authenticated profile and preferences endpoints.
+- Update the user presenter and validators.
+
+### Stage 4 — Backend profile management and avatar
+
+- Update first name and last name.
+- Manage contact information.
+- Support avatar URL and or image uploads.
+
+    Establish image validation, storage and deletion rules.
+
+    I would avoid storing image binaries directly in MongoDB.
+
+    We should also avoid tying the avatar implementation to a specific storage provider before reviewing the available infrastructure and cost implications.
+
+    One additional consideration: external image URLs can disappear, redirect or become unsafe. We should validate their format and restrict dangerous URL schemes.
+
+### Stage 5 — Frontend identity integration
+
+- Update IdentityProvider and identity services.
+- Implement profile editing.
+- Implement preference management.
+- Connect theme changes to persisted preferences.
+- Connect status selection to the backend.
+- Update AccountMenu and WorkspaceUserMenu.
+
+### Stage 6 — Workspace ownership integration
+
+- Replace sample sidebar ideations with actual user generations.
+- Implement personal generation listing.
+- Add loading, empty and error states.
+- Implement deletion from the sidebar.
+- Connect the Library page to the authenticated user's resources.
+- Implement appropriate workspace navigation.
+
+### Stage 7 — REST and frontend integration testing
+
+- Test authenticated generation creation.
+- Test owner-only retrieval.
+- Test cross-account access rejection.
+- Test listing and deletion.
+- Test profile and avatar updates.
+- Test theme and status persistence.
+- Test unauthorized requests and expired sessions.
+
+### Stage 8 — Documentation and completion
+
+- Update API documentation.
+- Update architecture documentation.
+- Document data migration requirements.
+- Update the Phase 9 checklist.
+- Git commit the completed work.
+
+## Implementation sequence: where we begin
+
+```bash
+First implementation milestone
+Stage 1
+Ownership architecture and data modelling
+
+Proposed first files to examine and update:
+1. server/src/modules/ideations/models/Ideation.js
+2. server/src/modules/ideations/repositories/ideation.repository.js
+3. server/src/modules/identity/models/User.js
+4. server/src/modules/identity/presenters/user.presenter.js
+We will establish the ownership relationship, preference structure, status representation and migration strategy before implementing endpoints.
+
+Completion criteria
+- Ownership is explicitly represented in the database.
+- Account preferences have a defined structure.
+- Historical records have an explicit migration policy.
+- Repository responsibilities are established.
+- Existing authentication functionality remains intact.
+
+One decision before we implement avatar uploads
+Since avatar uploads introduce external storage infrastructure, I would like to settle the intended storage approach before we reach Stage 4.
+
+Would you prefer to initially support external image URLs and introduce actual image uploads later, or should we implement both capabilities in this phase?
+
+My recommendation is to implement both, but keep the storage provider behind a dedicated service so that we can change providers without restructuring the identity domain.
+```
+
+---
+
+We should distinguish these two concepts:
+
+- Generation: the original output produced by the ideation engine.
+- Workspace resource: an item the user organizes, saves, archives or otherwise manages.
+
+We should not introduce a separate workspace collection prematurely. First, establish what the Library actually needs beyond the existing ideation records.
+
+The Library should not simply duplicate the entire Ideation collection.
+
 ---

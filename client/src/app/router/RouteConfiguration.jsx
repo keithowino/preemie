@@ -2,11 +2,15 @@ import { Navigate, useRoutes } from "react-router-dom";
 import {
 	authenticatedIdentityRoutes,
 	gatewayRoutes,
-	ideationRoutes,
 	publicIdentityRoutes,
 } from "../../modules/index.js";
 import { AuthenticatedRoute, PublicOnlyRoute } from "../../platform/index.js";
 import { labRoutes } from "@/modules/administration/index.js";
+import {
+	MarketingLayout,
+	WorkspaceLayout,
+} from "@/components/ui/Layouts/index.js";
+import workspaceRoutes from "@/modules/workspace/routes/workspace.routes.jsx";
 
 /**
  * React Query will manage asynchronous query states,
@@ -20,51 +24,34 @@ import { labRoutes } from "@/modules/administration/index.js";
  */
 
 function ApplicationRoutes() {
-	// return useRoutes([
-	// 	...gatewayRoutes,
-	// 	{
-	// 		element: <PublicOnlyRoute />,
-	// 		children: publicIdentityRoutes,
-	// 	},
-
-	// 	{
-	// 		element: <AuthenticatedRoute />,
-	// 		children: [
-	// 			...ideationRoutes,
-	// 			...authenticatedIdentityRoutes,
-	// 			...labRoutes, // Dev testing interface
-	// 		],
-	// 	},
-	// 	{
-	// 		path: "*",
-	// 		element: <Navigate to="/" replace />,
-	// 	},
-	// ]);
-
 	return useRoutes([
 		{
 			element: <MarketingLayout />,
-			children: [...gatewayRoutes /*, community, museum */],
+			children: [
+				...gatewayRoutes,
+				{
+					element: <PublicOnlyRoute />,
+					children: publicIdentityRoutes,
+				},
+			],
 		},
-		{ element: <PublicOnlyRoute />, children: publicIdentityRoutes },
 		{
 			element: <AuthenticatedRoute />,
 			children: [
 				{
 					element: <WorkspaceLayout />,
 					children: [
-						...ideationRoutes,
-						{
-							path: "/account",
-							element: <AccountLayout />,
-							children: accountRoutes,
-						},
-						...labRoutes,
+						...workspaceRoutes,
+						...authenticatedIdentityRoutes,
 					],
 				},
+				...labRoutes, // Dev testing interface
 			],
 		},
-		{ path: "*", element: <Navigate to="/" replace /> },
+		{
+			path: "*",
+			element: <Navigate to="/" replace />,
+		},
 	]);
 }
 

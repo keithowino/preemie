@@ -5,6 +5,7 @@ const gatewayRoutes = [
 		path: "/",
 		element: <LandingPage />,
 	},
+	/*, community, museum */
 ];
 
 export default gatewayRoutes;

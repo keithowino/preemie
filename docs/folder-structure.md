@@ -1,9 +1,12 @@
 # Preemie Folder Structure
 
-Generated on: 2026-10-27
+Generated on: 2026-11-08
 
 ```bash
 ├── client/
+│   ├── public/
+│   │   ├── favicon.svg
+│   │   └── icons.svg
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── config/
@@ -17,45 +20,141 @@ Generated on: 2026-10-27
 │   │   │   │   ├── index.js
 │   │   │   │   └── RouteConfiguration.jsx
 │   │   │   └── index.js
+│   │   ├── components/
+│   │   │   ├── custom/
+│   │   │   │   ├── layout/
+│   │   │   │   │   └── ScrollToTop.jsx
+│   │   │   │   └── workspace/
+│   │   │   │       ├── WorkspaceSidebar.jsx
+│   │   │   │       ├── WorkspaceTopBar.jsx
+│   │   │   │       └── WorkspaceUserMenu.jsx
+│   │   │   ├── test/
+│   │   │   │   └── page.jsx
+│   │   │   ├── toast/
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Toast.jsx
+│   │   │   │   └── ToastViewport.jsx
+│   │   │   ├── ui/
+│   │   │   │   ├── custom/
+│   │   │   │   │   └── FormError.jsx
+│   │   │   │   ├── Layouts/
+│   │   │   │   │   ├── container/
+│   │   │   │   │   │   ├── Container.jsx
+│   │   │   │   │   │   └── index.js
+│   │   │   │   │   ├── manual_code/
+│   │   │   │   │   │   └── drop_down/
+│   │   │   │   │   │       └── ss/
+│   │   │   │   │   │           └── one.jsx
+│   │   │   │   │   └── WorkspaceLayout.jsx
+│   │   │   │   ├── typography/
+│   │   │   │   │   └── Text.jsx
+│   │   │   │   ├── avatar.jsx
+│   │   │   │   ├── breadcrumb.jsx
+│   │   │   │   ├── button.jsx
+│   │   │   │   ├── card.jsx
+│   │   │   │   ├── collapsible.jsx
+│   │   │   │   ├── combobox.jsx
+│   │   │   │   ├── dropdown-menu.jsx
+│   │   │   │   ├── field.jsx
+│   │   │   │   ├── input-group.jsx
+│   │   │   │   ├── input.jsx
+│   │   │   │   ├── label.jsx
+│   │   │   │   ├── phone-input.jsx
+│   │   │   │   ├── scroll-area.jsx
+│   │   │   │   ├── select.jsx
+│   │   │   │   ├── separator.jsx
+│   │   │   │   ├── sheet.jsx
+│   │   │   │   ├── sidebar.jsx
+│   │   │   │   ├── skeleton.jsx
+│   │   │   │   ├── textarea.jsx
+│   │   │   │   └── tooltip.jsx
+│   │   │   ├── app-sidebar.jsx
+│   │   │   ├── nav-main.jsx
+│   │   │   ├── nav-projects.jsx
+│   │   │   ├── nav-user.jsx
+│   │   │   └── team-switcher.jsx
+│   │   ├── hooks/
+│   │   │   ├── use-mobile.js
+│   │   │   ├── useRecentIdeations.js
+│   │   │   └── useSignOut.js
 │   │   ├── lib/
-│   │   │   ├── components/
+│   │   │   ├── config/
+│   │   │   │   ├── index.js
+│   │   │   │   └── platform.js
+│   │   │   ├── custom_components/
 │   │   │   │   ├── layouts/
 │   │   │   │   │   ├── featureGrid/
 │   │   │   │   │   │   ├── FeatureGrid.jsx
 │   │   │   │   │   │   └── index.js
-│   │   │   │   │   ├── AppFooter.jsx
-│   │   │   │   │   ├── AppHeader.jsx
-│   │   │   │   │   ├── AppShell.jsx
 │   │   │   │   │   └── index.js
 │   │   │   │   ├── ui/
-│   │   │   │   │   ├── button/
-│   │   │   │   │   │   ├── Button.jsx
-│   │   │   │   │   │   ├── button.styles.js
-│   │   │   │   │   │   └── index.js
-│   │   │   │   │   ├── container/
-│   │   │   │   │   │   ├── Container.jsx
-│   │   │   │   │   │   └── index.js
+│   │   │   │   │   ├── loader/
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── Loader.jsx
 │   │   │   │   │   ├── section/
 │   │   │   │   │   │   ├── index.js
 │   │   │   │   │   │   └── Section.jsx
 │   │   │   │   │   ├── typography/
 │   │   │   │   │   │   ├── Heading.jsx
-│   │   │   │   │   │   ├── index.js
-│   │   │   │   │   │   └── Text.jsx
+│   │   │   │   │   │   └── index.js
 │   │   │   │   │   └── index.js
-│   │   │   │   ├── index.js
-│   │   │   │   └── ScrollToTop.jsx
-│   │   │   ├── config/
-│   │   │   │   ├── index.js
-│   │   │   │   └── platform.js
-│   │   │   ├── utils/
-│   │   │   │   ├── index.js
-│   │   │   │   ├── styles.js
-│   │   │   │   └── validateIdeationInput.js
+│   │   │   │   ├── EmptyState.jsx
+│   │   │   │   └── index.js
 │   │   │   ├── index.js
-│   │   │   └── MetaDataInsert.jsx
+│   │   │   ├── MetaDataInsert.jsx
+│   │   │   └── utils.js
 │   │   ├── modules/
-│   │   │   ├── ideations/
+│   │   │   ├── administration/
+│   │   │   │   ├── lab/
+│   │   │   │   │   ├── layouts/
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── LabLayout.jsx
+│   │   │   │   │   ├── pages/
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── Test.jsx
+│   │   │   │   │   ├── routes/
+│   │   │   │   │   │   ├── index.js
+│   │   │   │   │   │   └── lab.routes.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   └── index.js
+│   │   │   ├── gateway/
+│   │   │   │   ├── layouts/
+│   │   │   │   │   ├── AppFooter.jsx
+│   │   │   │   │   ├── AppHeader.jsx
+│   │   │   │   │   └── MarketingLayout.jsx
+│   │   │   │   ├── pages/
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   └── LandingPage.jsx
+│   │   │   │   ├── routes/
+│   │   │   │   │   ├── gateway.routes.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   └── index.js
+│   │   │   ├── identity/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── AccountMenu.jsx
+│   │   │   │   │   ├── AuthTextField.jsx
+│   │   │   │   │   ├── MobileNav.jsx
+│   │   │   │   │   └── StatusBot.jsx
+│   │   │   │   ├── layouts/
+│   │   │   │   │   ├── AuthLayout.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── pages/
+│   │   │   │   │   ├── AccountSettingsPage.jsx
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── LoginPage.jsx
+│   │   │   │   │   ├── ProfilePage.jsx
+│   │   │   │   │   ├── RegisterPage.jsx
+│   │   │   │   │   └── SessionsPage.jsx
+│   │   │   │   ├── routes/
+│   │   │   │   │   ├── identity.routes.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── utils/
+│   │   │   │   │   ├── HoldToSignOut.jsx
+│   │   │   │   │   └── index.js
+│   │   │   │   ├── validators/
+│   │   │   │   │   └── authSchema.js
+│   │   │   │   └── index.js
+│   │   │   ├── workspace/
 │   │   │   │   ├── components/
 │   │   │   │   │   ├── IdeationConstraintsForm.jsx
 │   │   │   │   │   ├── index.js
@@ -67,14 +166,16 @@ Generated on: 2026-10-27
 │   │   │   │   ├── pages/
 │   │   │   │   │   ├── HomePage.jsx
 │   │   │   │   │   ├── IdeasPage.jsx
-│   │   │   │   │   └── index.js
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   └── LibraryPage.jsx
 │   │   │   │   ├── routes/
-│   │   │   │   │   ├── ideation.routes.jsx
-│   │   │   │   │   └── index.js
+│   │   │   │   │   └── workspace.routes.jsx
 │   │   │   │   ├── services/
 │   │   │   │   │   ├── ideation.api.js
 │   │   │   │   │   └── index.js
-│   │   │   │   └── index.js
+│   │   │   │   └── validators/
+│   │   │   │       ├── ideationFormSchema.js
+│   │   │   │       └── index.js
 │   │   │   └── index.js
 │   │   ├── platform/
 │   │   │   ├── api/
@@ -85,25 +186,34 @@ Generated on: 2026-10-27
 │   │   │   │   ├── apiClient.js
 │   │   │   │   ├── apiError.js
 │   │   │   │   ├── index.js
-│   │   │   │   └── request.service.js
+│   │   │   │   ├── request.service.js
+│   │   │   │   └── sessionRefresh.js
 │   │   │   ├── identity/
 │   │   │   │   ├── identity.service.js
 │   │   │   │   ├── IdentityContext.jsx
 │   │   │   │   ├── IdentityProvider.jsx
 │   │   │   │   ├── index.js
 │   │   │   │   └── useIdentity.js
+│   │   │   ├── notifications/
+│   │   │   │   ├── index.js
+│   │   │   │   ├── NotificationContext.jsx
+│   │   │   │   ├── NotificationProvider.jsx
+│   │   │   │   └── useNotify.js
 │   │   │   ├── routing/
 │   │   │   │   ├── components/
 │   │   │   │   │   ├── AuthenticatedRoute.jsx
-│   │   │   │   │   └── index.js
-│   │   │   │   ├── hooks/
 │   │   │   │   │   ├── index.js
-│   │   │   │   │   └── useAuthenticatedRoute.js
+│   │   │   │   │   └── PublicOnlyRoute.jsx
 │   │   │   │   └── index.js
 │   │   │   ├── session/
 │   │   │   │   ├── index.js
 │   │   │   │   ├── sessionManager.js
 │   │   │   │   └── tokenStorage.js
+│   │   │   ├── theme/
+│   │   │   │   ├── index.js
+│   │   │   │   ├── ThemeContext.jsx
+│   │   │   │   ├── ThemeProvider.jsx
+│   │   │   │   └── useTheme.js
 │   │   │   └── index.js
 │   │   ├── App.jsx
 │   │   ├── index.css
@@ -112,12 +222,12 @@ Generated on: 2026-10-27
 │   ├── .env.example
 │   ├── .env.production
 │   ├── .gitignore
+│   ├── components.json
 │   ├── eslint.config.js
 │   ├── index.html
+│   ├── jsconfig.json
 │   ├── package.json
-│   ├── postcss.config.js
 │   ├── README.md
-│   ├── tailwind.config.js
 │   ├── vercel.json
 │   └── vite.config.js
 ├── config/

@@ -1,4 +1,4 @@
-import { AuthLayout } from "../layouts/index.js";
+import { AccountLayout, AuthLayout } from "../layouts/index.js";
 import {
 	AccountSettingsPage,
 	LoginPage,
@@ -6,6 +6,7 @@ import {
 	RegisterPage,
 	SessionsPage,
 } from "../pages/index.js";
+import { Navigate } from "react-router-dom";
 
 export const publicIdentityRoutes = [
 	{
@@ -23,17 +24,30 @@ export const publicIdentityRoutes = [
 	},
 ];
 
+/**
+ * Bare /account redirects to the profile page.
+ */
 export const authenticatedIdentityRoutes = [
 	{
-		path: "/account/profile",
-		element: <ProfilePage />,
-	},
-	{
-		path: "/account/settings",
-		element: <AccountSettingsPage />,
-	},
-	{
-		path: "/account/settings/security",
-		element: <SessionsPage />,
+		path: "/account",
+		element: <AccountLayout />,
+		children: [
+			{
+				index: true,
+				element: <Navigate to="/account/profile" replace />,
+			},
+			{
+				path: "profile",
+				element: <ProfilePage />,
+			},
+			{
+				path: "settings",
+				element: <AccountSettingsPage />,
+			},
+			{
+				path: "settings/security",
+				element: <SessionsPage />,
+			},
+		],
 	},
 ];

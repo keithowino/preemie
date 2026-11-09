@@ -1,8 +1,6 @@
-// "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
 	IdeationConstraintsForm,
@@ -217,13 +215,6 @@ export default function HomePage() {
 
 			<Container>
 				<Section aria-labelledby="examples-heading" className="mt-10">
-					<Link
-						to="/"
-						className="inline-flex font-semibold text-foreground underline underline-offset-4"
-					>
-						← Back
-					</Link>
-
 					<div>
 						<Text className="font-semibold uppercase tracking-[0.16em]">
 							Need a starting point?

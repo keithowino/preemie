@@ -1,17 +1,16 @@
-import { Container } from "@/components/ui/Layouts/container";
-import { Heading, MetaDataInsert, Section } from "@/lib";
+import { Heading, MetaDataInsert, Section } from "@/lib/index.js";
+import { Text } from "@/components/ui/typography/Text.jsx";
 
-const ProfilePage = () => {
+export default function ProfilePage() {
 	return (
 		<>
 			<MetaDataInsert title="My Profile" />
-			<Container>
-				<Section>
-					<Heading>ProfilePage</Heading>
-				</Section>
-			</Container>
+			<Section>
+				<Heading level={3}>Profile</Heading>
+				<Text className="mt-2">
+					Your name, avatar and contact details will be editable here.
+				</Text>
+			</Section>
 		</>
 	);
-};
-
-export default ProfilePage;
+}
