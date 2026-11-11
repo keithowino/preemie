@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { cors, env } from "./config/index.js";
 import routes from "./routes/api.js";
-import { errorHandler, notFound } from "./lib/index.js";
+import { errorHandler, notFound, uploadErrorHandler } from "./lib/index.js";
 import { requestMetadata } from "./lib/index.js";
 
 const app = express();
@@ -42,9 +42,7 @@ app.use("/api/v1", routes);
 
 app.use(notFound);
 
-/**
- * app.use(uploadErrorHandler);
- */
+app.use(uploadErrorHandler);
 
 app.use(errorHandler);
 

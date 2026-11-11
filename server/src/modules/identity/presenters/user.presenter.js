@@ -1,4 +1,4 @@
-import { getId } from "../../../app/index.js";
+import { getId, PRESENCE_STATUS, THEME_STATUS } from "../../../app/index.js";
 
 class UserPresenter {
 	present(user) {
@@ -12,6 +12,8 @@ class UserPresenter {
 			lastName: user.lastName,
 			email: user.email,
 
+			phone: user.phone ?? null,
+
 			avatar:
 				user.avatar && Object.keys(user.avatar).length > 0
 					? user.avatar
@@ -19,8 +21,14 @@ class UserPresenter {
 
 			preferences: {
 				appearance: {
-					theme: user.preferences?.appearance?.theme ?? "system",
+					theme:
+						user.preferences?.appearance?.theme ??
+						THEME_STATUS.SYSTEM,
 				},
+			},
+
+			presence: {
+				status: user.presence?.status ?? PRESENCE_STATUS.AVAILABLE,
 			},
 		};
 	}

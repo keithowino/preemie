@@ -1,12 +1,13 @@
 @baseUrl = http://localhost:5000/api/v1
 
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWUwZDk1OGI0MmVhNzI5Yzk0NDA3OGUiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFlNDM3YTdhMGMxOTlkZTI1Mjk1YWRhIiwiaWF0IjoxNzkzMzQxMzUxLCJleHAiOjE3OTM0Mjc3NTEsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.kgpWcB36UpoaziiWcDxtlLl0mFgd71OdRqWLL5wLjRE
+@emailA = designsolutions1629@gmail.com
+@passwordA = keith@1234
+@accessTokenA = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWUwZDk1OGI0MmVhNzI5Yzk0NDA3OGUiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFmMmZjNTE2NGY2NDJmNjViMWM1Njk2IiwiaWF0IjoxNzk0MzA5MjAxLCJleHAiOjE3OTQzOTU2MDEsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.DN7RRGkeiaw04rE9BfEUYainLotJQNlxObZjPBbP96g
+@refreshTokenA = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWUwZDk1OGI0MmVhNzI5Yzk0NDA3OGUiLCJqdGkiOiI1ZmMyMTY1MC1iMWIxLTQwNzUtYWMwMi1jNWYyYmE1YTNiY2IiLCJpYXQiOjE3OTQzMDkyMDEsImV4cCI6MTc5NTUxODgwMSwiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.8zkQ9Ynpkcoynx5EQmNYDjxj1qiBunXz1gfN90ta5ek
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWUwZDk1OGI0MmVhNzI5Yzk0NDA3OGUiLCJqdGkiOiJiMDQxYWNmOS02NzkyLTQ2ZTUtODM5Mi03MTAzNzZiMTVhNDYiLCJpYXQiOjE3OTMzNDEzNTEsImV4cCI6MTc5NDU1MDk1MSwiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.4dTmKUM3FyElphgeQxEDgDf55qjuOKCiLkthuLTnEyo
-
-@email = designsolutions1629@gmail.com
-
-@password = keith@1234
+@emailB = rembo1234@gmail.com
+@passwordB = rembo@1234
+@accessTokenB = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWVjOTkyZjM1YWE3Y2E0NjY5ZDg1ZGUiLCJlbWFpbCI6InJlbWJvMTIzNEBnbWFpbC5jb20iLCJzaWQiOiI2YWYyZmQ1ZTY0ZjY0MmY2NWIxYzU2OTciLCJpYXQiOjE3OTQzMDk0NzAsImV4cCI6MTc5NDM5NTg3MCwiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.HLGy7gFdUJYK4tUFZ99UV39mAArkmoNTH7nfV7cIpNs
 
 @sessionId = 6ae0d958b42ea729c944078f
 
@@ -23,51 +24,79 @@ Content-Type: application/json
     "password": "keith@1234"
 }
 
-### Login
+### Login User A
 
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
-# {
-#     "email": "{{email}}",
-#     "password": "{{password}}"
-# }
-
 {
-    "email": "rembo1234@gmail.com",
-    "password": "rembo@1234"
+    "email": "{{emailA}}",
+    "password": "{{passwordA}}"
 }
 
-### Logout ("refreshToken": "{{refreshToken}}")
+### Login User B
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{emailB}}",
+    "password": "{{passwordB}}"
+}
+
+### Logout ("refreshToken": "{{accessTokenA}}")
 
 POST {{baseUrl}}/auth/logout
 Content-Type: application/json
 
 {
-	"refreshToken": "{{refreshToken}}"
+	"refreshToken": "{{accessTokenA}}"
 }
 
 ### Authentication — Valid Access Token (First, log in then copy the returned access token.)
 
 GET {{baseUrl}}/auth/me
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{accessTokenA}}
+
+### Update Account profile
+
+PATCH {{baseUrl}}/auth/me
+Authorization: Bearer {{accessTokenB}}
+Content-Type: application/json
+
+{
+    "firstName": "Account",
+    "lastName": "Tester",
+    "phone": "+254712345678"
+}
+
+### Attempt to update a protected field
+
+PATCH {{baseUrl}}/auth/me
+Authorization: Bearer {{accessTokenB}}
+Content-Type: application/json
+
+{
+    "firstName": "Account",
+    "role": "admin"
+}
 
 ### sessions
 
 GET {{baseUrl}}/auth/sessions
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{accessTokenA}}
 Content-Type: application/json
 
 ### revoke/ delete 1 of User A's sessions
 
 DELETE {{baseUrl}}/auth/sessions/{{sessionId}}
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{accessTokenA}}
 Content-Type: application/json
 
 ### Revoke other User A's sessions
 
 DELETE {{baseUrl}}/auth/sessions
-Authorization: Bearer {{accessToken}}
+Authorization: Bearer {{accessTokenA}}
 Content-Type: application/json
 
 ### Successful Refresh ("refreshToken": "<refresh_token_from_login_response>"), then Reuse the Old Refresh Token
@@ -76,5 +105,5 @@ POST {{baseUrl}}/auth/refresh
 Content-Type: application/json
 
 {
-    "refreshToken": "{{refreshToken}}"
+    "refreshToken": "{{refreshTokenA}}"
 }

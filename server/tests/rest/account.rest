@@ -1,0 +1,54 @@
+@baseUrl = http://localhost:5000/api/v1
+
+@emailA = designsolutions1629@gmail.com
+@passwordA = keith@1234
+@accessTokenA = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWUwZDk1OGI0MmVhNzI5Yzk0NDA3OGUiLCJlbWFpbCI6ImRlc2lnbnNvbHV0aW9uczE2MjlAZ21haWwuY29tIiwic2lkIjoiNmFmMmZjNTE2NGY2NDJmNjViMWM1Njk2IiwiaWF0IjoxNzk0MzA5MjAxLCJleHAiOjE3OTQzOTU2MDEsImF1ZCI6InByZWVtaWUtdGhyZWUtY2xpZW50IiwiaXNzIjoicHJlZW1pZS10aHJlZSJ9.DN7RRGkeiaw04rE9BfEUYainLotJQNlxObZjPBbP96g
+
+@emailB = rembo1234@gmail.com
+@passwordB = rembo@1234
+
+@accessTokenB = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWVjOTkyZjM1YWE3Y2E0NjY5ZDg1ZGUiLCJlbWFpbCI6InJlbWJvMTIzNEBnbWFpbC5jb20iLCJzaWQiOiI2YWYyZmQ1ZTY0ZjY0MmY2NWIxYzU2OTciLCJpYXQiOjE3OTQzMDk0NzAsImV4cCI6MTc5NDM5NTg3MCwiYXVkIjoicHJlZW1pZS10aHJlZS1jbGllbnQiLCJpc3MiOiJwcmVlbWllLXRocmVlIn0.HLGy7gFdUJYK4tUFZ99UV39mAArkmoNTH7nfV7cIpNs
+
+### Get Account preferences
+
+GET {{baseUrl}}/auth/preferences
+Authorization: Bearer {{accessTokenA}}
+
+### Update Account theme
+
+PATCH {{baseUrl}}/auth/preferences
+Authorization: Bearer {{accessTokenA}}
+Content-Type: application/json
+
+{
+    "appearance": {
+        "theme": "dark"
+    }
+}
+
+### Attempt unsupported theme
+
+PATCH {{baseUrl}}/auth/preferences
+Authorization: Bearer {{accessTokenA}}
+Content-Type: application/json
+
+{
+    "appearance": {
+        "theme": "blue"
+    }
+}
+
+### Get Account presence
+
+GET {{baseUrl}}/auth/presence
+Authorization: Bearer {{accessTokenA}}
+
+### Set Account A presence to busy
+
+PATCH {{baseUrl}}/auth/presence
+Authorization: Bearer {{accessTokenA}}
+Content-Type: application/json
+
+{
+    "status": "busy"
+}

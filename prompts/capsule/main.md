@@ -155,6 +155,10 @@ We must secure the backend independently.
 
         We should also consider what happens when the user changes their theme on one device while another session is active.
 
+        When a user changes their theme, the frontend should optimistically update the UI and then persist the new value through an authenticated endpoint. If persistence fails, the frontend should reconcile its state with the server.
+
+        For multiple sessions, I recommend account-level persistence without real-time synchronization in this stage. The next time another session fetches the account preferences, it receives the latest theme. We can later add synchronization on window focus or real-time events if the user experience requires it.
+
 - Introduce persistent presence/status.
   The status should be persisted against the user account.
 
@@ -162,12 +166,21 @@ We must secure the backend independently.
 
     There is also an architectural consideration: presence across multiple devices is different from presence stored on a single user document. We can begin with account-level status and introduce real-time presence tracking only when necessary
 
+    Actual online/offline detection across multiple devices is a separate concern. We can introduce session-derived or real-time presence later without changing the meaning of this manual status.
+
 - Implement authenticated profile and preferences endpoints.
 - Update the user presenter and validators.
 
+#### Implementation sequence
+
+1. User model and validation. (covered)
+2. Repository and services. (covered)
+3. Controllers and routes. (covered)
+4. REST testing. (covered)
+5. Frontend integration: update theme state from the backend and restore it during authentication bootstrap.
+
 ### Stage 4 — Backend profile management and avatar
 
-- Update first name and last name.
 - Manage contact information.
 - Support avatar URL and or image uploads.
 
@@ -218,24 +231,6 @@ We must secure the backend independently.
 ## Implementation sequence: where we begin
 
 ```bash
-First implementation milestone
-Stage 1
-Ownership architecture and data modelling
-
-Proposed first files to examine and update:
-1. server/src/modules/ideations/models/Ideation.js
-2. server/src/modules/ideations/repositories/ideation.repository.js
-3. server/src/modules/identity/models/User.js
-4. server/src/modules/identity/presenters/user.presenter.js
-We will establish the ownership relationship, preference structure, status representation and migration strategy before implementing endpoints.
-
-Completion criteria
-- Ownership is explicitly represented in the database.
-- Account preferences have a defined structure.
-- Historical records have an explicit migration policy.
-- Repository responsibilities are established.
-- Existing authentication functionality remains intact.
-
 One decision before we implement avatar uploads
 Since avatar uploads introduce external storage infrastructure, I would like to settle the intended storage approach before we reach Stage 4.
 
@@ -254,5 +249,157 @@ We should distinguish these two concepts:
 We should not introduce a separate workspace collection prematurely. First, establish what the Library actually needs beyond the existing ideation records.
 
 The Library should not simply duplicate the entire Ideation collection.
+
+---
+
+## Uploaded images
+
+| Property          | Proposed rule         |
+| ----------------- | --------------------- |
+| Maximum file size | 5 MB                  |
+| JPEG/ PNG/ WebP   | Allowed               |
+| SVG               | Not allowed           |
+| GIF               | Not allowed initially |
+
+If we later introduce server-side image importing, we will need additional SSRF protections, including redirect validation and restrictions on private and internal IP addresses.
+
+## Proposed account avatar data structure
+
+```js
+avatar: {
+    url: String,
+
+    source: {
+        type: String,
+        enum: ["UPLOAD", "EXTERNAL"],
+    },
+
+    storage: {
+        provider: String,
+        key: String,
+    },
+
+    metadata: {
+        format: String,
+        width: Number,
+        height: Number,
+        bytes: Number,
+    },
+},
+```
+
+The purpose of each property:
+
+url -> URL used by the frontend to display the avatar.
+source -> Distinguishes uploaded images from externally hosted images.
+storage.provider -> Identifies the storage provider for uploaded images.
+storage.key -> Identifies the stored asset for future deletion.
+metadata.format -> Actual image format.
+metadata.width -> Image width.
+metadata.height -> Image height.
+metadata.bytes -> Stored image size.
+
+For an external URL, storage and image metadata can be absent.
+For an uploaded image, the storage information is necessary to manage replacement and deletion.
+This structure also gives us room to change storage providers without changing the account API contract.
+
+| Method | Endpoint        | Responsibility                          |
+| ------ | --------------- | --------------------------------------- |
+| PATCH  | /auth/me        | Update first name, last name and phone. |
+| PUT    | /auth/me/avatar | Upload and replace an avatar.           |
+| PATCH  | /auth/me/avatar | Set an externally hosted avatar URL.    |
+| DELETE | /auth/me/avatar | Remove the current avatar.              |
+
+## Implementation plan
+
+Here is the sequence I recommend following.
+
+Step 1 — Architecture and storage preparation (covered)
+
+- Finalize avatar schema.
+- Establish storage provider interface.
+- Review and prepare the Cloudinary adapter without coupling the Identity module to it.
+- Review environment configuration.
+
+Step 2 — User model and presenter (in process)
+
+- Update User.js.
+- Update user.presenter.js.
+- Preserve existing profile and preference behavior.
+
+Step 3 — Image upload infrastructure (in process)
+
+- Install and configure file-type and Sharp
+- Refine Multer upload middleware
+- Introduce actual image-content validation.
+- Implement provider-independent storage service
+- Establish storage upload and deletion operations.
+- Refine upload error handling.
+
+Step 4 — Avatar service and repository
+
+- Implement upload, external URL assignment and removal.
+- Implement safe replacement and cleanup behavior.
+- Keep account ownership enforced through req.user.\_id.
+
+Step 5 — Controllers, validators and routes
+
+- Extend AccountController.
+- Introduce avatar request validation.
+- Implement the three avatar endpoints.
+- Retain the existing profile endpoint.
+- Verify standardized error handling.
+
+Step 6 — REST testing
+
+- Test profile updates.
+- Test valid and invalid uploads.
+- Test external URL validation.
+- Test avatar replacement and deletion.
+- Test authentication and account isolation.
+- Test storage failure scenarios.
+
+Step 7 - Frontend integration
+
+- Update account API methods
+- Connect avatar upload and removal
+- Connect external URL updates
+- Synchronize authenticated user state
+- Implement loading, error and success feedback
+
+Step 8 - Documentation and completion
+
+- Document API contracts and environment variables
+- Document image storage architecture
+- Update project implementation notes
+- Review changes and commit
+
+After every completed state you mention document this, document that. for instance here you said "Document API contracts and environment variables". What does this entail, where am i to document this.
+
+## Upload security and processing
+
+Receive multipart request.
+Check file size and preliminary MIME type.
+Inspect actual file signature using file-type.
+Decode and validate image using Sharp.
+Normalize the image and remove unnecessary metadata.
+Upload the processed image to Cloudinary.
+Persist its reference and metadata in MongoDB.
+
+For the initial implementation, Cloudinary remains the only configured adapter. We should also eventually make the Cloudinary credential requirements conditional on the selected provider. Otherwise, even a future deployment using a different provider would still need Cloudinary credentials merely to start the application.
+
+---
+
+One important distinction concerning contact information: changing an email address should eventually be a separate, verified identity workflow. We should not allow an ordinary profile update to silently change the account's login email.
+
+---
+
+We may proceed to REST tests, in each test give me the complete REST example.
+
+Tests ... all passed successfully and or returned the expected responses.
+
+For your information so as to avoid inconsistencies, here is the current state(s) of a portion of the folder structure and files we recently created or optimized:
+
+Access and respond to what i have just attached
 
 ---

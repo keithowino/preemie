@@ -22,9 +22,62 @@ async function findByEmail(email) {
 // 	return user.save();
 // }
 
+async function updateProfile(userId, profileData) {
+	return User.findOneAndUpdate(
+		{
+			_id: userId,
+		},
+		{
+			$set: profileData,
+		},
+		{
+			returnDocument: "after",
+			runValidators: true,
+		},
+	);
+}
+
+async function updatePreferences(userId, preferencesData) {
+	return User.findOneAndUpdate(
+		{
+			_id: userId,
+		},
+		{
+			$set: {
+				"preferences.appearance.theme":
+					preferencesData.appearance.theme,
+			},
+		},
+		{
+			returnDocument: "after",
+			runValidators: true,
+		},
+	);
+}
+
+async function updatePresence(userId, presenceData) {
+	return User.findOneAndUpdate(
+		{
+			_id: userId,
+		},
+		{
+			$set: {
+				"presence.status": presenceData.status,
+			},
+		},
+		{
+			returnDocument: "after",
+			runValidators: true,
+		},
+	);
+}
+
 export default {
 	create,
 	findById,
 	findByEmail,
 	// save,
+	updateProfile,
+	updatePreferences,
+	updatePresence,
 };

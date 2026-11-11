@@ -59,7 +59,9 @@ export default function WorkspaceTopBar() {
 											</BreadcrumbLink>
 										)}
 									</BreadcrumbItem>
-									{!isLast && <BreadcrumbSeparator />}
+									{!isLast && (
+										<BreadcrumbSeparator className="hidden md:block" />
+									)}
 								</Fragment>
 							);
 						})}
